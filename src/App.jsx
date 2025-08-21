@@ -17,9 +17,15 @@ import { AdminPortfolio } from './pages/admin/AdminPortfolio'
 import { AdminSettings } from './pages/admin/AdminSettings'
 import { Login } from './pages/admin/Login'
 
+// ✅ Import the ScrollToTop component
+import { ScrollToTop } from './components/ui/ScrollToTop'
+
 function App() {
   return (
     <AuthProvider>
+      {/* ✅ Scroll to top on route change */}
+      <ScrollToTop />
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Layout />}>

@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Instagram, 
-  Facebook, 
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  Facebook,
   Twitter,
-  ArrowUp
+  ArrowUp,
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import vrikshalogo from '../../assets/images/vrikshalogo.png'
 
 const footerSections = [
   {
@@ -19,26 +20,25 @@ const footerSections = [
       { name: 'Commercial Design', href: '/services#commercial' },
       { name: 'Consultation', href: '/services#consultation' },
       { name: 'Project Management', href: '/services#project-management' },
-    ]
+    ],
   },
   {
     title: 'Company',
     links: [
-      { name: 'About Us', href: '/about' },
+      { name: 'Services', href: '/services' },
       { name: 'Portfolio', href: '/portfolio' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'Careers', href: '/careers' },
-    ]
+  { name: 'Blog', href: '/blog' },
+  { name: 'Contact', href: '/contact' },
+    ],
   },
   {
     title: 'Support',
     links: [
       { name: 'Contact Us', href: '/contact' },
       { name: 'Request Quote', href: '/request-quote' },
-      { name: 'FAQ', href: '/faq' },
       { name: 'Privacy Policy', href: '/privacy' },
-    ]
-  }
+    ],
+  },
 ]
 
 const socialLinks = [
@@ -52,6 +52,8 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer className="bg-gradient-primary text-primary-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -64,11 +66,15 @@ export function Footer() {
               viewport={{ once: true }}
               className="flex items-center space-x-3"
             >
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                <span className="text-white font-bold text-xl">ID</span>
-              </div>
+              <img
+                src={vrikshalogo}
+                alt="Vrikshaa Logo"
+                className="w-25 h-20 rounded-lg object-contain bg-white/20 p-1 backdrop-blur-sm"
+              />
               <div>
-                <h2 className="text-2xl font-heading font-bold">Interior Design</h2>
+                <h2 className="text-2xl font-heading font-bold">
+                  Vrikshaa Space Creation
+                </h2>
                 <p className="text-sm text-primary-foreground/70">
                   Creating Beautiful Spaces
                 </p>
@@ -82,8 +88,8 @@ export function Footer() {
               transition={{ delay: 0.1 }}
               className="text-primary-foreground/80 leading-relaxed max-w-md"
             >
-              Transform your space into a work of art. We specialize in creating 
-              beautiful, functional interiors that reflect your unique style and 
+              Transform your space into a work of art. We specialize in creating
+              beautiful, functional interiors that reflect your unique style and
               enhance your daily life.
             </motion.p>
 
@@ -105,7 +111,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail size={18} className="text-white" />
-                <span>hello@interiordesign.com</span>
+                <span>hello@vrikshaa.com</span>
               </div>
             </motion.div>
 
@@ -198,7 +204,7 @@ export function Footer() {
             viewport={{ once: true }}
             className="text-primary-foreground/60 text-sm"
           >
-            © 2024 Interior Design. All rights reserved.
+            © {currentYear} Vrikshaa Space Creation. All rights reserved.
           </motion.p>
 
           <motion.button

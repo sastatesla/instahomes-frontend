@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Phone, Mail } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import vrikshalogo from '../../assets/images/vrikshalogo.png'
 
 const navigationItems = [
   { name: 'Home', href: '/' },
@@ -16,6 +17,8 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
+
+  const isHomePage = location.pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,26 +42,27 @@ export function Navigation() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300 text-white',
-          isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border text-black' 
-            : 'bg-transparent'
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+          !isHomePage
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border text-black'
+            : isScrolled
+              ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border text-black'
+              : 'bg-transparent text-white'
         )}
       >
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to="/" className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-                  <span className="text-white bg-pink-500 px-4 py-2 rounded-lg font-bold text-lg">IH</span>
-                </div>
+                <img
+                  src={vrikshalogo}
+                  alt="Vrikshaa Logo"
+                  className="w-25 h-20 rounded-lg object-contain"
+                />
                 <div className="hidden sm:block">
-                  <h1 className="text-xl font-heading font-semibold text-foreground">
-                    Insta Homes
+                  <h1 className="text-xl font-heading font-semibold">
+                    Vrikshaa Space Creation
                   </h1>
                   <p className="text-xs text-muted-foreground -mt-1">
                     Creating Beautiful Spaces
@@ -77,7 +81,9 @@ export function Navigation() {
                       'relative text-sm font-medium transition-colors duration-200',
                       location.pathname === item.href
                         ? 'text-accent'
-                        : 'text-foreground hover:text-accent'
+                        : !isHomePage || isScrolled
+                          ? 'text-black hover:text-accent'
+                          : 'text-white hover:text-accent'
                     )}
                   >
                     {item.name}
@@ -111,7 +117,12 @@ export function Navigation() {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleMenu}
-                className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors duration-200"
+                className={cn(
+                  'lg:hidden p-2 rounded-lg transition-colors duration-200',
+                  !isHomePage || isScrolled
+                    ? 'hover:bg-gray-100 text-black'
+                    : 'hover:bg-muted text-white'
+                )}
                 aria-label="Toggle menu"
               >
                 <AnimatePresence mode="wait">
@@ -202,7 +213,6 @@ export function Navigation() {
                       </Link>
                     </motion.div>
                   ))}
-                  
                   <motion.div
                     initial={{ x: 50, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
