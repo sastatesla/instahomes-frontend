@@ -29,12 +29,10 @@ const portfolioSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   description: z.string().min(20, 'Description must be at least 20 characters'),
   category: z.enum(['residential', 'commercial', 'renovation', 'styling']),
-  style: z.enum(['modern', 'contemporary', 'traditional', 'minimalist', 'industrial', 'scandinavian', 'bohemian', 'eclectic']),
   location: z.string().optional(),
-  completionDate: z.string().optional(),
-  projectDuration: z.string().optional(),
-  budget: z.enum(['under-50k', '50k-100k', '100k-250k', '250k-500k', 'over-500k']).optional(),
   client: z.string().optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().max(160, 'SEO description must be less than 160 characters').optional(),
   published: z.boolean().optional(),
   featured: z.boolean().optional()
 })
@@ -62,10 +60,6 @@ const StatusBadge = ({ published, featured }) => (
 )
 
 const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) => {
-  const [highlights, setHighlights] = useState(project?.highlights?.join(', ') || '')
-  const [challenges, setChallenges] = useState(project?.challenges?.join(', ') || '')
-  const [solutions, setSolutions] = useState(project?.solutions?.join(', ') || '')
-  const [materials, setMaterials] = useState(project?.materials?.join(', ') || '')
   const [tags, setTags] = useState(project?.tags?.join(', ') || '')
   const [imageFiles, setImageFiles] = useState([])
   const [imagePreviews, setImagePreviews] = useState(project?.images?.map(img => img.url) || [])
@@ -77,12 +71,10 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
       title: project?.title || '',
       description: project?.description || '',
       category: project?.category || 'residential',
-      style: project?.style || 'modern',
       location: project?.location || '',
-      completionDate: project?.completionDate ? project.completionDate.split('T')[0] : '',
-      projectDuration: project?.projectDuration || '',
-      budget: project?.budget || '',
       client: project?.client || '',
+      seoTitle: project?.seoTitle || '',
+      seoDescription: project?.seoDescription || '',
       published: project?.published || false,
       featured: project?.featured || false
     }
@@ -121,12 +113,7 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
     try {
       const portfolioData = {
         ...data,
-        highlights: highlights.split(',').map(item => item.trim()).filter(Boolean),
-        challenges: challenges.split(',').map(item => item.trim()).filter(Boolean),
-        solutions: solutions.split(',').map(item => item.trim()).filter(Boolean),
-        materials: materials.split(',').map(item => item.trim()).filter(Boolean),
-        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-        completionDate: data.completionDate || undefined
+        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean)
       }
 
       let response
@@ -227,66 +214,15 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Style *</label>
-                <select
-                  {...register('style')}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
-                >
-                  <option value="modern">Modern</option>
-                  <option value="contemporary">Contemporary</option>
-                  <option value="traditional">Traditional</option>
-                  <option value="minimalist">Minimalist</option>
-                  <option value="industrial">Industrial</option>
-                  <option value="scandinavian">Scandinavian</option>
-                  <option value="bohemian">Bohemian</option>
-                  <option value="eclectic">Eclectic</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Completion Date</label>
+                <label className="block text-sm font-medium mb-2">Client Name</label>
                 <input
-                  {...register('completionDate')}
-                  type="date"
+                  {...register('client')}
                   className="w-full px-3 py-2 border border-border rounded-lg bg-white"
+                  placeholder="Client name (optional)"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Project Duration</label>
-                <input
-                  {...register('projectDuration')}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
-                  placeholder="e.g., 6 months"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Budget Range</label>
-                <select
-                  {...register('budget')}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
-                >
-                  <option value="">Select budget range</option>
-                  <option value="under-50k">Under $50K</option>
-                  <option value="50k-100k">$50K - $100K</option>
-                  <option value="100k-250k">$100K - $250K</option>
-                  <option value="250k-500k">$250K - $500K</option>
-                  <option value="over-500k">Over $500K</option>
-                </select>
-              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Client Name</label>
-              <input
-                {...register('client')}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-white"
-                placeholder="Client name (optional)"
-              />
-            </div>
 
             <div>
               <label className="block text-sm font-medium mb-2">Project Images</label>
@@ -331,53 +267,6 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Highlights</label>
-                <textarea
-                  value={highlights}
-                  onChange={e => setHighlights(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
-                  placeholder="Separate highlights with commas"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Materials Used</label>
-                <textarea
-                  value={materials}
-                  onChange={e => setMaterials(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
-                  placeholder="Separate materials with commas"
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Challenges</label>
-                <textarea
-                  value={challenges}
-                  onChange={e => setChallenges(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
-                  placeholder="Project challenges, separated by commas"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Solutions</label>
-                <textarea
-                  value={solutions}
-                  onChange={e => setSolutions(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
-                  placeholder="How challenges were solved, separated by commas"
-                />
-              </div>
-            </div>
 
             <div>
               <label className="block text-sm font-medium mb-2">Tags</label>
@@ -387,6 +276,30 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
                 className="w-full px-3 py-2 border border-border rounded-lg bg-white"
                 placeholder="Separate tags with commas"
               />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Title</label>
+                <input
+                  {...register('seoTitle')}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
+                  placeholder="SEO optimized title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Description</label>
+                <textarea
+                  {...register('seoDescription')}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
+                  placeholder="Meta description for search engines"
+                />
+                {errors.seoDescription && (
+                  <p className="text-red-500 text-sm mt-1">{errors.seoDescription.message}</p>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center space-x-6">
@@ -509,6 +422,30 @@ export function PortfolioManagement() {
     }
   }
 
+  const handleTogglePublish = async (project) => {
+    try {
+      const response = await portfolioAPI.togglePublished(project._id)
+      if (response.success) {
+        setProjects(prev => prev.map(p => p._id === project._id ? response.data : p))
+      }
+    } catch (error) {
+      console.error('Error toggling publish status:', error)
+      alert('Failed to update publish status')
+    }
+  }
+
+  const handleToggleFeatured = async (project) => {
+    try {
+      const response = await portfolioAPI.toggleFeatured(project._id)
+      if (response.success) {
+        setProjects(prev => prev.map(p => p._id === project._id ? response.data : p))
+      }
+    } catch (error) {
+      console.error('Error toggling featured status:', error)
+      alert('Failed to update featured status')
+    }
+  }
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -616,10 +553,24 @@ export function PortfolioManagement() {
                     
                     <div className="flex items-center justify-between">
                       <div className="text-xs text-muted-foreground">
-                        <span className="capitalize">{project.category}</span> • {project.style}
+                        <span className="capitalize">{project.category}</span>
                       </div>
                       
                       <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleTogglePublish(project)}
+                          className="p-2 hover:bg-muted rounded-lg transition-colors"
+                          title={project.published ? 'Unpublish' : 'Publish'}
+                        >
+                          {project.published ? <EyeOff size={14} /> : <Globe size={14} />}
+                        </button>
+                        <button
+                          onClick={() => handleToggleFeatured(project)}
+                          className="p-2 hover:bg-muted rounded-lg transition-colors"
+                          title={project.featured ? 'Remove from Featured' : 'Mark as Featured'}
+                        >
+                          <Star size={14} className={project.featured ? 'fill-yellow-500 text-yellow-500' : ''} />
+                        </button>
                         <button
                           onClick={() => handleEditProject(project)}
                           className="p-2 hover:bg-muted rounded-lg transition-colors"

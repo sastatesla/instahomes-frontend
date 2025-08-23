@@ -46,7 +46,7 @@ export function Portfolio() {
   }
 
   const nextImage = () => {
-    if (selectedProject) {
+    if (selectedProject && selectedProject.images) {
       setSelectedImageIndex(
         selectedImageIndex === selectedProject.images.length - 1 
           ? 0 
@@ -56,7 +56,7 @@ export function Portfolio() {
   }
 
   const prevImage = () => {
-    if (selectedProject) {
+    if (selectedProject && selectedProject.images) {
       setSelectedImageIndex(
         selectedImageIndex === 0 
           ? selectedProject.images.length - 1 
@@ -184,7 +184,7 @@ export function Portfolio() {
                     {/* Project Image */}
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <img
-                        src={project.images[0]}
+                        src={project.images?.[0]?.url || project.images?.[0] || '/api/placeholder/400/300'}
                         alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -198,7 +198,7 @@ export function Portfolio() {
                       </div>
 
                       {/* Image Count Badge */}
-                      {project.images.length > 1 && (
+                      {project.images && project.images.length > 1 && (
                         <div className="absolute top-4 right-4 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
                           +{project.images.length - 1}
                         </div>
@@ -211,8 +211,8 @@ export function Portfolio() {
                         <h3 className="text-xl font-heading font-bold group-hover:text-accent transition-colors duration-300">
                           {project.title}
                         </h3>
-                        <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
-                          {project.year}
+                        <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded capitalize">
+                          {project.category}
                         </span>
                       </div>
                       
@@ -225,7 +225,7 @@ export function Portfolio() {
                           <p className="text-sm font-medium">{project.location}</p>
                         </div>
                         <div className="flex flex-wrap gap-1">
-                          {project.tags.slice(0, 2).map((tag) => (
+                          {project.tags && project.tags.slice(0, 2).map((tag) => (
                             <span key={tag} className="text-xs border text-primary-foreground px-2 py-1 rounded shadow-sm">
                               {tag}
                             </span>
@@ -259,13 +259,13 @@ export function Portfolio() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative max-w-6xl w-full border max-h-[90vh] bg-white rounded-2xl overflow-hidden shadow-large"
+              className="relative max-w-6xl w-full border max-h-[90vh] bg-black rounded-2xl overflow-hidden shadow-large"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={closeLightbox}
-                className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/60 hover:bg-gray/80 text-black rounded-full flex items-center justify-center transition-colors"
               >
                 <X size={24} />
               </button>
@@ -274,13 +274,13 @@ export function Portfolio() {
                 {/* Image Section */}
                 <div className="relative aspect-[4/3] lg:aspect-auto">
                   <img
-                    src={selectedProject.images[selectedImageIndex]}
+                    src={selectedProject.images?.[selectedImageIndex]?.url || selectedProject.images?.[selectedImageIndex] || '/api/placeholder/600/400'}
                     alt={`${selectedProject.title} - Image ${selectedImageIndex + 1}`}
                     className="w-full h-full object-cover"
                   />
                   
                   {/* Navigation Arrows */}
-                  {selectedProject.images.length > 1 && (
+                  {selectedProject.images && selectedProject.images.length > 1 && (
                     <>
                       <button
                         onClick={prevImage}
@@ -298,7 +298,7 @@ export function Portfolio() {
                   )}
 
                   {/* Image Indicators */}
-                  {selectedProject.images.length > 1 && (
+                  {selectedProject.images && selectedProject.images.length > 1 && (
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
                       {selectedProject.images.map((_, index) => (
                         <button
@@ -324,7 +324,8 @@ export function Portfolio() {
                         {selectedProject.title}
                       </h2>
                       <p className="text-muted-foreground">
-                        {selectedProject.location} • {selectedProject.year}
+                        {selectedProject.location && selectedProject.location}
+                        {selectedProject.client && ` • ${selectedProject.client}`}
                       </p>
                     </div>
                   </div>
@@ -334,16 +335,7 @@ export function Portfolio() {
                   </p>
 
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-3">Project Tags</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProject.tags.map((tag) => (
-                          <span key={tag} className="bg-accent/10 border text-amber-50 px-3 py-2 rounded-lg text-sm">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                  
 
                     <div className='text-amber-50'>
                       <h3 className="font-semibold mb-3">Project Details</h3>
@@ -352,53 +344,62 @@ export function Portfolio() {
                           <span className="text-muted-foreground">Category:</span>
                           <span className="capitalize">{selectedProject.category}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Completed:</span>
-                          <span>{selectedProject.year}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Images:</span>
-                          <span>{selectedProject.images.length}</span>
-                        </div>
-                        {selectedProject.style && (
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Style:</span>
-                            <span className="capitalize">{selectedProject.style}</span>
-                          </div>
-                        )}
                         {selectedProject.client && (
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Client:</span>
                             <span>{selectedProject.client}</span>
                           </div>
                         )}
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Images:</span>
+                          <span>{selectedProject.images?.length || 0}</span>
+                        </div>
+                        {selectedProject.published !== undefined && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Status:</span>
+                            <span className="capitalize">{selectedProject.published ? 'Published' : 'Draft'}</span>
+                          </div>
+                        )}
+                        {selectedProject.featured && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Featured:</span>
+                            <span>Yes</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {/* Additional API data sections */}
-                    {selectedProject.highlights && selectedProject.highlights.length > 0 && (
+                    {/* Show additional tags */}
+                    {selectedProject.tags && selectedProject.tags.length > 2 && (
                       <div className='text-amber-50'>
-                        <h3 className="font-semibold mb-3">Project Highlights</h3>
-                        <ul className="space-y-1 text-sm">
-                          {selectedProject.highlights.map((highlight, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="text-accent mr-2">•</span>
-                              {highlight}
-                            </li>
+                        <h3 className="font-semibold mb-3">All Tags</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProject.tags.map((tag) => (
+                            <span key={tag} className="bg-accent/10 border text-amber-50 px-3 py-2 rounded-lg text-sm">
+                              {tag}
+                            </span>
                           ))}
-                        </ul>
+                        </div>
                       </div>
                     )}
 
-                    {selectedProject.materials && selectedProject.materials.length > 0 && (
+                    {/* SEO Information for admin preview */}
+                    {(selectedProject.seoTitle || selectedProject.seoDescription) && (
                       <div className='text-amber-50'>
-                        <h3 className="font-semibold mb-3">Materials Used</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedProject.materials.map((material, index) => (
-                            <span key={index} className="bg-muted/20 text-amber-50 px-2 py-1 rounded text-sm">
-                              {material}
-                            </span>
-                          ))}
+                        <h3 className="font-semibold mb-3">SEO Information</h3>
+                        <div className="space-y-2 text-sm">
+                          {selectedProject.seoTitle && (
+                            <div>
+                              <span className="text-muted-foreground">SEO Title:</span>
+                              <p>{selectedProject.seoTitle}</p>
+                            </div>
+                          )}
+                          {selectedProject.seoDescription && (
+                            <div>
+                              <span className="text-muted-foreground">SEO Description:</span>
+                              <p>{selectedProject.seoDescription}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}

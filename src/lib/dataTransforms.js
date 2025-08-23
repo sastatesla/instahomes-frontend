@@ -66,7 +66,7 @@ export const transformSingleBlog = (apiResponse) => {
  */
 export const transformPortfolioData = (apiResponse) => {
   // Handle both paginated and direct array responses
-  const portfolioItems = apiResponse?.data?.portfolio || apiResponse?.data || apiResponse || []
+  const portfolioItems = apiResponse?.data?.projects || apiResponse?.data || apiResponse || []
   
   return portfolioItems.map(item => ({
     id: item._id,

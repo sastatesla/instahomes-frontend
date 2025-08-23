@@ -66,6 +66,8 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
   const [imagePreview, setImagePreview] = useState(blog?.image?.url || null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  console.log('BlogModal state:', { content: content.length, isSubmitting, mode, isOpen })
+
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     resolver: zodResolver(blogSchema),
     defaultValues: {
@@ -81,6 +83,15 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
     }
   })
 
+  console.log('Form errors:', errors)
+
+  // Sync content with form when modal opens or content changes
+  useEffect(() => {
+    if (isOpen && content) {
+      setValue('content', content)
+    }
+  }, [isOpen, content, setValue])
+
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -94,6 +105,7 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
   const onSubmit = async (data) => {
     console.log('Blog submission started:', { data, content, imageFile })
     console.log('Current token:', localStorage.getItem('token') ? 'exists' : 'missing')
+    console.log('API Base URL:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
     setIsSubmitting(true)
     
     try {
@@ -111,28 +123,37 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
       }
 
       console.log('Prepared blog data:', blogData)
+      console.log('About to make API call...')
 
       let response
       if (mode === 'create') {
         console.log('Creating new blog...')
         response = await blogAPI.create(blogData, imageFile)
+        console.log('Create API call completed:', response)
       } else {
         console.log('Updating existing blog...', blog._id)
         response = await blogAPI.update(blog._id, blogData, imageFile)
+        console.log('Update API call completed:', response)
       }
 
-      console.log('API response:', response)
+      console.log('Final API response:', response)
 
-      if (response.success) {
+      if (response && response.success) {
         console.log('Blog saved successfully')
         onSave(response.data)
         onClose()
       } else {
-        console.error('API returned error:', response)
-        alert(response.message || 'Failed to save blog post')
+        console.error('API returned error or no response:', response)
+        alert(response?.message || 'Failed to save blog post - no response received')
       }
     } catch (error) {
       console.error('Error saving blog:', error)
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        data: error.data,
+        stack: error.stack
+      })
       alert(`Failed to save blog post: ${error.message}`)
     } finally {
       setIsSubmitting(false)
@@ -166,7 +187,11 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={(e) => {
+            console.log('Form submit event triggered!')
+            console.log('Event:', e)
+            return handleSubmit(onSubmit)(e)
+          }} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Title *</label>
@@ -267,7 +292,11 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
               <label className="block text-sm font-medium mb-2">Content *</label>
               <RichTextEditor
                 content={content}
-                onChange={setContent}
+                onChange={(newContent) => {
+                  console.log('Content changed:', newContent.length, 'chars')
+                  setContent(newContent)
+                  setValue('content', newContent) // Sync with form
+                }}
                 placeholder="Write your blog post content here..."
               />
               {content.length < 50 && (
@@ -329,6 +358,12 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || content.length < 50}
+                onClick={() => {
+                  console.log('Save button clicked!')
+                  console.log('Content length:', content.length)
+                  console.log('Is submitting:', isSubmitting)
+                  console.log('Button disabled:', isSubmitting || content.length < 50)
+                }}
                 className={cn(
                   'flex items-center space-x-2 px-6 py-2 modern-button text-accent-foreground rounded-lg font-medium transition-colors',
                   (isSubmitting || content.length < 50) && 'opacity-50 cursor-not-allowed'
@@ -367,9 +402,9 @@ export function BlogManagement() {
       const params = {
         page,
         limit: 10,
-        search: searchTerm || undefined,
-        category: categoryFilter !== 'all' ? categoryFilter : undefined,
-        published: statusFilter === 'published' ? 'true' : statusFilter === 'draft' ? 'false' : undefined
+        search: searchTerm || '',
+        category: categoryFilter !== 'all' ? categoryFilter : '',
+        published: statusFilter === 'published' ? 'true' : statusFilter === 'draft' ? 'false' : ''
       }
 
       const response = await blogAPI.getAll(params)

@@ -75,7 +75,7 @@ export const useDataWithFallback = (apiCall, fallbackData, dependencies = [], op
 
   useEffect(() => {
     fetchData()
-  }, dependencies)
+  }, dependencies || []) // Default to empty array if null/undefined
 
   return { 
     data, 

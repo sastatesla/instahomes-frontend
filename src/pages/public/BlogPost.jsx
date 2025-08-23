@@ -21,17 +21,17 @@ import { transformSingleBlog } from '../../lib/dataTransforms'
 import { FALLBACK_BLOG_POSTS } from '../../data/fallbackData'
 
 // Fallback blog posts lookup
-const getFallbackPost = (slug) => {
-  return FALLBACK_BLOG_POSTS.find(post => post.slug === slug)
+const getFallbackPost = (id) => {
+  return FALLBACK_BLOG_POSTS.find(post => post.id === id)
 }
 
 export function BlogPost() {
-  const { slug } = useParams()
+  const { id } = useParams()
   const [isLiked, setIsLiked] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
 
-  // Get fallback post for this slug
-  const fallbackPost = getFallbackPost(slug)
+  // Get fallback post for this id
+  const fallbackPost = getFallbackPost(id)
 
   // Fetch blog post with fallback
   const { 
@@ -40,9 +40,9 @@ export function BlogPost() {
     isFromAPI, 
     error 
   } = useItemWithFallback(
-    (slug) => blogAPI.getById(slug),
+    (id) => blogAPI.getById(id),
     fallbackPost,
-    slug,
+    id,
     {
       transform: transformSingleBlog,
       onSuccess: (data) => console.log('✅ Blog post loaded from API:', data.title),
@@ -315,12 +315,12 @@ export function BlogPost() {
             <h3 className="text-2xl font-heading font-bold mb-8">Related Articles</h3>
             <div className="grid md:grid-cols-2 gap-6">
               {FALLBACK_BLOG_POSTS
-                .filter(relatedPost => relatedPost.slug !== slug && relatedPost.category === post.category)
+                .filter(relatedPost => relatedPost.id !== id && relatedPost.category === post.category)
                 .slice(0, 2)
                 .map((relatedPost) => (
                   <Link
                     key={relatedPost.id}
-                    to={`/blog/${relatedPost.slug}`}
+                    to={`/blog/${relatedPost.id}`}
                     className="group modern-card overflow-hidden hover:shadow-lg transition-all duration-300"
                   >
                     <div className="aspect-[16/10] overflow-hidden">

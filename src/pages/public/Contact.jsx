@@ -12,10 +12,12 @@ import {
   CheckCircle,
   Instagram,
   Facebook,
-  Twitter
+  Twitter,
+  Linkedin
 } from 'lucide-react'
 import { fadeInVariants, cn } from '../../lib/utils'
 import { contactAPI } from '../../lib/api'
+import { useSettings } from '../../hooks/useSettings'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -28,42 +30,63 @@ const contactSchema = z.object({
   })
 })
 
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: 'Visit Our Studio',
-    details: ['123 Design Street', 'Creative District, CC 12345'],
-    action: 'Get Directions'
-  },
-  {
-    icon: Phone,
-    title: 'Call Us',
-    details: ['+1 (555) 123-4567', 'Mon-Fri 9AM-6PM PST'],
-    action: 'Call Now'
-  },
-  {
-    icon: Mail,
-    title: 'Email Us',
-    details: ['hello@interiordesign.com', 'We reply within 24 hours'],
-    action: 'Send Email'
-  },
-  {
-    icon: Clock,
-    title: 'Business Hours',
-    details: ['Monday - Friday: 9AM - 6PM', 'Saturday: 10AM - 4PM', 'Sunday: Closed'],
-    action: null
-  }
-]
-
-const socialLinks = [
-  { name: 'Instagram', icon: Instagram, href: '#', color: 'hover:text-pink-500' },
-  { name: 'Facebook', icon: Facebook, href: '#', color: 'hover:text-blue-600' },
-  { name: 'Twitter', icon: Twitter, href: '#', color: 'hover:text-sky-500' }
-]
-
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const { data: settings, isFromAPI } = useSettings()
+
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: 'Visit Our Studio',
+      details: [
+        settings?.contactInfo?.address?.street || '123 Design Street',
+        settings?.contactInfo?.address ? 
+          `${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
+          'Creative District, CC 12345'
+      ],
+      action: 'Get Directions'
+    },
+    {
+      icon: Phone,
+      title: 'Call Us',
+      details: [
+        settings?.contactInfo?.phone || '+1 (555) 123-4567',
+        'Mon-Fri 9AM-6PM PST'
+      ],
+      action: 'Call Now'
+    },
+    {
+      icon: Mail,
+      title: 'Email Us',
+      details: [
+        settings?.contactInfo?.email || 'hello@interiordesign.com',
+        'We reply within 24 hours'
+      ],
+      action: 'Send Email'
+    },
+    {
+      icon: Clock,
+      title: 'Business Hours',
+      details: settings?.contactInfo?.businessHours ? [
+        `Monday - Friday: ${settings.contactInfo.businessHours.monday}`,
+        `Saturday: ${settings.contactInfo.businessHours.saturday}`,
+        `Sunday: ${settings.contactInfo.businessHours.sunday}`
+      ] : [
+        'Monday - Friday: 9AM - 6PM',
+        'Saturday: 10AM - 4PM',
+        'Sunday: Closed'
+      ],
+      action: null
+    }
+  ]
+
+  const socialLinks = [
+    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#', color: 'hover:text-pink-500' },
+    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#', color: 'hover:text-blue-600' },
+    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#', color: 'hover:text-sky-500' },
+    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#', color: 'hover:text-blue-700' }
+  ].filter(link => link.href !== '#' && link.href)
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(contactSchema)
@@ -104,7 +127,10 @@ export function Contact() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">✨ Get In Touch</span>
+            <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">
+              ✨ Get In Touch
+              {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>}
+            </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
               Let's Create Something
               <span className="block text-gradient">Beautiful Together</span>
@@ -342,8 +368,15 @@ export function Contact() {
                   the latest in design trends and materials.
                 </p>
                 <div className="bg-accent/5 rounded-lg p-4 text-sm">
-                  <p className="font-medium">123 Design Street</p>
-                  <p className="text-muted-foreground">Creative District, CC 12345</p>
+                  <p className="font-medium">
+                    {settings?.contactInfo?.address?.street || '123 Design Street'}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {settings?.contactInfo?.address ? 
+                      `${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
+                      'Creative District, CC 12345'
+                    }
+                  </p>
                 </div>
                 <button className="mt-4 text-accent hover:text-accent/80 font-medium transition-colors">
                   View on Google Maps
@@ -398,6 +431,7 @@ export function Contact() {
                 </div>
                 <p className="text-sm text-muted-foreground mt-4">
                   Get daily inspiration and behind-the-scenes content
+                  {!isFromAPI && <span className="ml-2 text-xs text-amber-600 opacity-75">(Demo Links)</span>}
                 </p>
               </div>
             </motion.div>

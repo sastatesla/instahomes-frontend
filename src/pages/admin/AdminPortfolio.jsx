@@ -19,18 +19,22 @@ import {
   Tag,
   Move,
   ImageIcon,
-  GripVertical
+  GripVertical,
+  Globe,
+  EyeOff
 } from 'lucide-react'
 import { portfolioAPI } from '../../lib/api'
 import { cn } from '../../lib/utils'
 
 const portfolioSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  category: z.enum(['residential', 'commercial', 'hospitality', 'office', 'retail', 'other']),
+  description: z.string().min(20, 'Description must be at least 20 characters'),
+  category: z.enum(['residential', 'commercial', 'renovation', 'styling']),
   client: z.string().optional(),
   location: z.string().optional(),
-  year: z.string().optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().max(160, 'SEO description must be less than 160 characters').optional(),
+  published: z.boolean().optional(),
   featured: z.boolean().optional(),
   tags: z.array(z.string()).optional()
 })
@@ -49,7 +53,9 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
       category: portfolio?.category || 'residential',
       client: portfolio?.client || '',
       location: portfolio?.location || '',
-      year: portfolio?.year || new Date().getFullYear().toString(),
+      seoTitle: portfolio?.seoTitle || '',
+      seoDescription: portfolio?.seoDescription || '',
+      published: portfolio?.published || false,
       featured: portfolio?.featured || false
     }
   })
@@ -160,10 +166,8 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
                 >
                   <option value="residential">Residential</option>
                   <option value="commercial">Commercial</option>
-                  <option value="hospitality">Hospitality</option>
-                  <option value="office">Office</option>
-                  <option value="retail">Retail</option>
-                  <option value="other">Other</option>
+                  <option value="renovation">Renovation</option>
+                  <option value="styling">Styling</option>
                 </select>
               </div>
             </div>
@@ -181,7 +185,7 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
               )}
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Client</label>
                 <input
@@ -198,14 +202,6 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
                   placeholder="Project location"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Year</label>
-                <input
-                  {...register('year')}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
-                  placeholder="2024"
-                />
-              </div>
             </div>
 
             <div>
@@ -216,6 +212,30 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
                 className="w-full px-3 py-2 border border-border rounded-lg bg-white"
                 placeholder="Separate tags with commas"
               />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Title</label>
+                <input
+                  {...register('seoTitle')}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-white"
+                  placeholder="SEO optimized title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Description</label>
+                <textarea
+                  {...register('seoDescription')}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-white resize-none"
+                  placeholder="Meta description for search engines"
+                />
+                {errors.seoDescription && (
+                  <p className="text-red-500 text-sm mt-1">{errors.seoDescription.message}</p>
+                )}
+              </div>
             </div>
 
             {/* Images */}
@@ -282,14 +302,22 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
+              <label className="flex items-center space-x-2">
+                <input
+                  {...register('published')}
+                  type="checkbox"
+                  className="rounded"
+                />
+                <span>Published</span>
+              </label>
               <label className="flex items-center space-x-2">
                 <input
                   {...register('featured')}
                   type="checkbox"
                   className="rounded"
                 />
-                <span>Featured Project</span>
+                <span>Featured</span>
               </label>
             </div>
 
@@ -397,6 +425,30 @@ export function AdminPortfolio() {
     }
   }
 
+  const handleTogglePublish = async (portfolio) => {
+    try {
+      const response = await portfolioAPI.togglePublished(portfolio._id)
+      if (response.success) {
+        setPortfolios(prev => prev.map(p => p._id === portfolio._id ? response.data : p))
+      }
+    } catch (error) {
+      console.error('Error toggling publish status:', error)
+      alert('Failed to update publish status')
+    }
+  }
+
+  const handleToggleFeatured = async (portfolio) => {
+    try {
+      const response = await portfolioAPI.toggleFeatured(portfolio._id)
+      if (response.success) {
+        setPortfolios(prev => prev.map(p => p._id === portfolio._id ? response.data : p))
+      }
+    } catch (error) {
+      console.error('Error toggling featured status:', error)
+      alert('Failed to update featured status')
+    }
+  }
+
   const PortfolioCard = ({ portfolio, index }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -417,7 +469,21 @@ export function AdminPortfolio() {
             <Star size={16} className="text-yellow-400 fill-current" />
           </div>
         )}
-        <div className="absolute top-2 right-2 space-x-1">
+        <div className="absolute top-2 right-2 flex space-x-1">
+          <button
+            onClick={() => handleTogglePublish(portfolio)}
+            className="p-1 bg-black/50 text-white rounded hover:bg-black/70"
+            title={portfolio.published ? 'Unpublish' : 'Publish'}
+          >
+            {portfolio.published ? <EyeOff size={14} /> : <Globe size={14} />}
+          </button>
+          <button
+            onClick={() => handleToggleFeatured(portfolio)}
+            className="p-1 bg-black/50 text-white rounded hover:bg-black/70"
+            title={portfolio.featured ? 'Remove from Featured' : 'Mark as Featured'}
+          >
+            <Star size={14} className={portfolio.featured ? 'fill-yellow-400 text-yellow-400' : ''} />
+          </button>
           <button
             onClick={() => handleEditPortfolio(portfolio)}
             className="p-1 bg-black/50 text-white rounded hover:bg-black/70"
@@ -436,9 +502,31 @@ export function AdminPortfolio() {
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-semibold text-foreground truncate">{portfolio.title}</h3>
-          <span className="text-xs bg-muted px-2 py-1 rounded capitalize">
-            {portfolio.category}
-          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-xs bg-muted px-2 py-1 rounded capitalize">
+              {portfolio.category}
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 mb-3">
+          {portfolio.published ? (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+              <Globe size={10} className="mr-1" />
+              Published
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+              <EyeOff size={10} className="mr-1" />
+              Draft
+            </span>
+          )}
+          {portfolio.featured && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+              <Star size={10} className="mr-1" />
+              Featured
+            </span>
+          )}
         </div>
         
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
@@ -447,7 +535,7 @@ export function AdminPortfolio() {
         
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>{portfolio.location || 'No location'}</span>
-          <span>{portfolio.year || 'No year'}</span>
+          <span>{portfolio.client || 'No client'}</span>
         </div>
         
         {portfolio.tags && portfolio.tags.length > 0 && (
@@ -508,10 +596,8 @@ export function AdminPortfolio() {
               <option value="all">All Categories</option>
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
-              <option value="hospitality">Hospitality</option>
-              <option value="office">Office</option>
-              <option value="retail">Retail</option>
-              <option value="other">Other</option>
+              <option value="renovation">Renovation</option>
+              <option value="styling">Styling</option>
             </select>
             
             <select

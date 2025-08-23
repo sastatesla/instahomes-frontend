@@ -7,10 +7,11 @@ import {
   Instagram,
   Facebook,
   Twitter,
-  ArrowUp,
+  Linkedin,
+  ArrowUp
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
-import vrikshalogo from '../../assets/images/vrikshalogo.png'
+import { useSettings } from '../../hooks/useSettings'
 
 const footerSections = [
   {
@@ -41,18 +42,19 @@ const footerSections = [
   },
 ]
 
-const socialLinks = [
-  { name: 'Instagram', icon: Instagram, href: '#' },
-  { name: 'Facebook', icon: Facebook, href: '#' },
-  { name: 'Twitter', icon: Twitter, href: '#' },
-]
-
 export function Footer() {
+  const { data: settings, isFromAPI } = useSettings()
+  
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const currentYear = new Date().getFullYear()
+  const socialLinks = [
+    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
+    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
+    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
+    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
+  ].filter(link => link.href !== '#' && link.href)
 
   return (
     <footer className="bg-gradient-primary text-primary-foreground">
@@ -73,10 +75,10 @@ export function Footer() {
               />
               <div>
                 <h2 className="text-2xl font-heading font-bold">
-                  Vrikshaa Space Creation
+                  {settings?.companyName || 'Interior Design'}
                 </h2>
                 <p className="text-sm text-primary-foreground/70">
-                  Creating Beautiful Spaces
+                  {settings?.companyTagline || 'Creating Beautiful Spaces'}
                 </p>
               </div>
             </motion.div>
@@ -88,9 +90,9 @@ export function Footer() {
               transition={{ delay: 0.1 }}
               className="text-primary-foreground/80 leading-relaxed max-w-md"
             >
-              Transform your space into a work of art. We specialize in creating
-              beautiful, functional interiors that reflect your unique style and
-              enhance your daily life.
+              {settings?.companyDescription || 
+                'Transform your space into a work of art. We specialize in creating beautiful, functional interiors that reflect your unique style and enhance your daily life.'
+              }
             </motion.p>
 
             {/* Contact Info */}
@@ -103,15 +105,20 @@ export function Footer() {
             >
               <div className="flex items-center space-x-3 text-sm">
                 <MapPin size={18} className="text-white" />
-                <span>123 Design Street, Creative City, CC 12345</span>
+                <span>
+                  {settings?.contactInfo?.address ? 
+                    `${settings.contactInfo.address.street}, ${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
+                    '123 Design Street, Creative City, CC 12345'
+                  }
+                </span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Phone size={18} className="text-white" />
-                <span>+1 (555) 123-4567</span>
+                <span>{settings?.contactInfo?.phone || '+1 (555) 123-4567'}</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail size={18} className="text-white" />
-                <span>hello@vrikshaa.com</span>
+                <span>{settings?.contactInfo?.email || 'hello@interiordesign.com'}</span>
               </div>
             </motion.div>
 
@@ -204,7 +211,8 @@ export function Footer() {
             viewport={{ once: true }}
             className="text-primary-foreground/60 text-sm"
           >
-            © {currentYear} Vrikshaa Space Creation. All rights reserved.
+            © 2024 {settings?.companyName || 'Interior Design'}. All rights reserved.
+            {!isFromAPI && <span className="ml-2 text-xs opacity-75">(Demo)</span>}
           </motion.p>
 
           <motion.button

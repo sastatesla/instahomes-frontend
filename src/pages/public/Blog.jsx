@@ -110,7 +110,7 @@ export function Blog() {
                   whileHover={{ y: -5 }}
                   className="group modern-card overflow-hidden hover:shadow-xl transition-all duration-500"
                 >
-                  <Link to={`/blog/${post.slug}`}>
+                  <Link to={`/blog/${post.id}`}>
                     <div className="relative aspect-[16/10] overflow-hidden">
                       <img
                         src={post.image}
@@ -273,7 +273,7 @@ export function Blog() {
                     whileHover={{ y: -5 }}
                     className="group modern-card overflow-hidden hover:shadow-lg transition-all duration-500"
                   >
-                    <Link to={`/blog/${post.slug}`}>
+                    <Link to={`/blog/${post.id}`}>
                       <div className="relative aspect-[16/10] overflow-hidden">
                         <img
                           src={post.image}
