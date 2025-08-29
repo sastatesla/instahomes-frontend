@@ -69,7 +69,7 @@ export function Footer() {
               className="flex items-center space-x-3"
             >
               <img
-                src={vrikshalogo}
+                // src={vrikshalogo}
                 alt="Vrikshaa Logo"
                 className="w-25 h-20 rounded-lg object-contain bg-white/20 p-1 backdrop-blur-sm"
               />

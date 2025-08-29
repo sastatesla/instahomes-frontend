@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { Layout } from './components/layout/Layout'
 import { AdminLayout } from './components/admin/AdminLayout'
@@ -19,8 +19,12 @@ import { Login } from './pages/admin/Login'
 
 // ✅ Import the ScrollToTop component
 import { ScrollToTop } from './components/ui/ScrollToTop'
+import WhatsAppFloat from './pages/public/WhatsAppFloat'
 
 function App() {
+  const location = useLocation()
+  const isPublicRoute = !location.pathname.startsWith('/admin')
+
   return (
     <AuthProvider>
       {/* ✅ Scroll to top on route change */}
@@ -49,6 +53,9 @@ function App() {
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
+
+      {/* WhatsApp Float - Only on public routes */}
+      {isPublicRoute && <WhatsAppFloat />}
     </AuthProvider>
   )
 }
