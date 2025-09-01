@@ -15,7 +15,7 @@ const WhatsAppFloat = () => {
 
   const handleWhatsAppClick = () => {
     const phoneNumber = "917904528778"; // Example: 919876543210 for +91 98765 43210
-    const message = encodeURIComponent("Hello! I'm interested in your video production services.");
+    const message = encodeURIComponent("Hello! I'm interested in your interior design services.");
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
