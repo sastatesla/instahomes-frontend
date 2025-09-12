@@ -50,12 +50,6 @@ const sidebarItems = [
     description: 'Project Showcases'
   },
   {
-    name: 'Analytics',
-    href: '/admin/analytics',
-    icon: BarChart3,
-    description: 'Performance Metrics'
-  },
-  {
     name: 'Settings',
     href: '/admin/settings',
     icon: Settings,

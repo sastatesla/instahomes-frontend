@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { useSettings } from '../../hooks/useSettings'
+import vrikshalogo from '../../assets/images/vrikshalogo.png'
 
 const footerSections = [
   {
@@ -49,12 +50,12 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const socialLinks = [
-    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
-    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
-    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
-    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
-  ].filter(link => link.href !== '#' && link.href)
+  // const socialLinks = [
+  //   { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
+  //   { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
+  //   { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
+  //   { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
+  // ].filter(link => link.href !== '#' && link.href)
 
   return (
     <footer className="bg-gradient-primary text-primary-foreground">
@@ -69,13 +70,13 @@ export function Footer() {
               className="flex items-center space-x-3"
             >
               <img
-                // src={vrikshalogo}
+                src={vrikshalogo}
                 alt="Vrikshaa Logo"
                 className="w-25 h-20 rounded-lg object-contain bg-white/20 p-1 backdrop-blur-sm"
               />
               <div>
                 <h2 className="text-2xl font-heading font-bold">
-                  {settings?.companyName || 'Interior Design'}
+                  {settings?.companyName || 'Vrikshaa Space Creation'}
                 </h2>
                 <p className="text-sm text-primary-foreground/70">
                   {settings?.companyTagline || 'Creating Beautiful Spaces'}
@@ -108,22 +109,22 @@ export function Footer() {
                 <span>
                   {settings?.contactInfo?.address ? 
                     `${settings.contactInfo.address.street}, ${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
-                    '123 Design Street, Creative City, CC 12345'
+                    '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere, Bengaluru-560054'
                   }
                 </span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Phone size={18} className="text-white" />
-                <span>{settings?.contactInfo?.phone || '+1 (555) 123-4567'}</span>
+                <span>{settings?.contactInfo?.phone || '84891 11000'}</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail size={18} className="text-white" />
-                <span>{settings?.contactInfo?.email || 'hello@interiordesign.com'}</span>
+                <span>{settings?.contactInfo?.email || 'info@vrikshaa.com'}</span>
               </div>
             </motion.div>
 
             {/* Social Links */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -142,7 +143,7 @@ export function Footer() {
                   <Icon size={20} />
                 </motion.a>
               ))}
-            </motion.div>
+            </motion.div> */}
           </div>
 
           {/* Footer Sections */}
@@ -211,8 +212,8 @@ export function Footer() {
             viewport={{ once: true }}
             className="text-primary-foreground/60 text-sm"
           >
-            © 2024 {settings?.companyName || 'Interior Design'}. All rights reserved.
-            {!isFromAPI && <span className="ml-2 text-xs opacity-75">(Demo)</span>}
+            © {new Date().getFullYear()} {settings?.companyName || 'Vrikshaa Space Creation'}. All rights reserved.
+            {!isFromAPI && <span className="ml-2 text-xs opacity-75"></span>}
           </motion.p>
 
           <motion.button

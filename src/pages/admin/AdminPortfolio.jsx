@@ -33,7 +33,7 @@ const portfolioSchema = z.object({
   client: z.string().optional(),
   location: z.string().optional(),
   seoTitle: z.string().optional(),
-  seoDescription: z.string().max(160, 'SEO description must be less than 160 characters').optional(),
+  seoDescription: z.string().min(50, 'SEO description must be less than 160 characters').optional(),
   published: z.boolean().optional(),
   featured: z.boolean().optional(),
   tags: z.array(z.string()).optional()

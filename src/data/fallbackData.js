@@ -249,19 +249,19 @@ export const FALLBACK_CATEGORIES = {
 }
 
 export const FALLBACK_SETTINGS = {
-  companyName: 'Interior Design Studio',
+  companyName: 'Vrikshaa Space Creation OPC Pvt. Ltd.',
   companyTagline: 'Transforming spaces, creating dreams',
-  companyDescription: 'We are a full-service interior design company specializing in residential and commercial spaces.',
+  companyDescription: 'We are a full-service interior design and construction company specializing in residential and commercial spaces.',
   
   contactInfo: {
-    email: 'info@interiordesign.com',
-    phone: '+1 (555) 123-4567',
+    email: 'info@vrikshaa.com',
+    phone: '84891 11000',
     address: {
-      street: '123 Design Street',
-      city: 'Design City',
-      state: 'DS',
-      zipCode: '12345',
-      country: 'United States'
+      street: '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere',
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      zipCode: '560054',
+      country: 'India'
     },
     businessHours: {
       monday: '9:00 AM - 6:00 PM',

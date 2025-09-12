@@ -12,9 +12,154 @@ import {
   Grid3X3,
   Layers,
   DoorOpen,
-  Square
+  Square,
+  Paintbrush,
+  PanelBottom
 } from 'lucide-react'
 import { fadeInVariants, staggerChildren } from '../../lib/utils'
+import prefab1 from '../../assets/prefab/prefab1.jpg'
+import prefab2 from '../../assets/prefab/prefab2.jpg'
+import prefab3 from '../../assets/prefab/prefab3.jpg'
+import prefab4 from '../../assets/prefab/prefab4.jpg'
+import prefab5 from '../../assets/prefab/prefab5.jpg'
+import upvc1 from '../../assets/upvcflooring/upvc1.jpg'
+import upvc2 from '../../assets/upvcflooring/upvc2.jpg'
+import upvcceiling1 from '../../assets/upvcceiling/upvcceiling1.jpg'
+import upvcceiling2 from '../../assets/upvcceiling/upvcceiling2.jpg'
+import gypsumceiling1 from '../../assets/gypsumceiling/gypsumceling1.jpg'
+import gypsumceiling2 from '../../assets/gypsumceiling/gypsumceling2.jpg'
+import gypsumceiling3 from '../../assets/gypsumceiling/gypsumceling3.jpg'
+import gypsumceiling4 from '../../assets/gypsumceiling/gypsumeceilin4.jpg'
+import fastceiling from '../../assets/fastceiling/fastceling.jpg'
+import modularkitchen1 from '../../assets/modulerkitchen/modulerkitchen1.jpg'
+import modularkitchen2 from '../../assets/modulerkitchen/modulerkitchen2.jpg'
+import modularkitchen3 from '../../assets/modulerkitchen/modulerkitchen3.jpg'
+import modularkitchen4 from '../../assets/modulerkitchen/modulerkitchen4.jpg'
+import interior1 from '../../assets/Interiorpanting/interior1.jpg'
+import interior2 from '../../assets/Interiorpanting/interior2.jpg'
+import interior3 from '../../assets/Interiorpanting/interior3.jpg'
+import interior4 from '../../assets/Interiorpanting/interior4.jpg'
+import interior5 from '../../assets/Interiorpanting/interior5.jpg'
+import exterior1 from '../../assets/exterior/exterior1.jpg'
+import exterior2 from '../../assets/exterior/exterior2.jpg'
+import exterior3 from '../../assets/exterior/exterior3.jpg'
+import waterproofing1 from '../../assets/waterproofing/waterproofing1.jpg'
+import waterproofing2 from '../../assets/waterproofing/waterproofing2.jpg'
+import waterproofing3 from '../../assets/waterproofing/waterproofing3.jpg'
+import exterior from '../../assets/exterior/exterior.jpg'
+import facate from '../../assets/facaate/facate.jpg'
+import facate2 from '../../assets/facaate/facate2.jpg'
+import facate3 from '../../assets/facaate/facate3.jpg'
+import facate4 from '../../assets/facaate/facate4.jpg'
+import facate5 from '../../assets/facaate/facate5.jpg'
+import facate7 from '../../assets/facaate/facate7.jpg'
+import facate8 from '../../assets/facaate/facate8.jpg'
+import facate9 from '../../assets/facaate/facate9.jpg'
+import facte6 from '../../assets/facaate/facte6.jpg'
+import wallstencing from '../../assets/wallIntensing/wallstencing.jpg'
+import wallstencing1 from '../../assets/wallIntensing/wallstencing1.jpg'
+import wallstencing2 from '../../assets/wallIntensing/wallstencing2.jpg'
+import wallstencing3 from '../../assets/wallIntensing/wallstencing3.jpg'
+
+// Our Services - Updated with specific services
+const ourServices = [
+  {
+    id: 'prefab-homes',
+    title: 'Prefab Homes',
+    description: 'Modern prefabricated home solutions with luxury finishes and contemporary design.',
+    icon: Building2,
+    images: [prefab1, prefab2, prefab3, prefab4, prefab5],
+    included: ['Structural design', 'Premium materials', 'Modern layouts', 'Smart home integration', 'Quality assurance']
+  },
+  {
+    id: 'upvc-ceiling',
+    title: 'uPVC Ceiling',
+    description: 'High-quality uPVC ceiling solutions with superior durability and modern aesthetics.',
+    icon: PanelBottom,
+    images: [upvcceiling1, upvcceiling2],
+    included: ['Custom sizing', 'Professional installation', 'Weather resistance', 'Low maintenance', 'Long lifespan']
+  },
+  {
+    id: 'upvc-flooring',
+    title: 'uPVC Flooring',
+    description: 'Premium uPVC flooring solutions with excellent durability and easy maintenance.',
+    icon: Square,
+    images: [ upvc2],
+    included: ['Custom sizing', 'Professional installation', 'Water resistance', 'Easy maintenance', 'Long-lasting finish']
+  },
+  {
+    id: 'pvc-gypsum-ceilings',
+    title: 'PVC & Gypsum Ceilings',
+    description: 'Modern ceiling solutions combining PVC durability with gypsum elegance.',
+    icon: Layers,
+    images: [gypsumceiling1, gypsumceiling2, gypsumceiling3, gypsumceiling4, fastceiling],
+    included: ['Design consultation', 'Material supply', 'Professional installation', 'Lighting integration', 'Smooth finishing']
+  },
+  {
+    id: 'upvc-windows',
+    title: 'uPVC Windows',
+    description: 'Energy-efficient uPVC windows with superior insulation and modern aesthetics.',
+    icon: Square,
+    images: [upvc1, upvc2],
+    included: ['Custom sizing', 'Professional installation', 'Weather sealing', 'Hardware fitting', 'Energy efficiency']
+  },
+  {
+    id: 'modular-kitchens',
+    title: 'Modular Kitchens',
+    description: 'Custom modular kitchen designs with premium finishes and smart storage solutions.',
+    icon: Grid3X3,
+    images: [modularkitchen1, modularkitchen2, modularkitchen3, modularkitchen4],
+    included: ['Custom design', 'Premium materials', 'Smart storage', 'Professional installation', 'Quality hardware']
+  },
+  {
+    id: 'interior-painting',
+    title: 'Interior Painting',
+    description: 'Professional interior painting services with premium finishes and color consultation.',
+    icon: Paintbrush,
+    images: [interior1, interior2, interior3, interior4, interior5],
+    included: ['Surface preparation', 'Primer application', 'Multiple coat application', 'Color consultation', 'Quality finish']
+  },
+  {
+    id: 'exterior-painting',
+    title: 'Exterior Painting',
+    description: 'Weather-resistant exterior painting solutions to protect and beautify your property.',
+    icon: Paintbrush,
+    images: [exterior, exterior1, exterior2, exterior3],
+    included: ['Weather-resistant paints', 'Surface preparation', 'Primer application', 'Multiple coat application', 'Long-lasting finish']
+  },
+  {
+    id: 'waterproofing',
+    title: 'Waterproofing',
+    description: 'Comprehensive waterproofing solutions to protect your property from water damage.',
+    icon: Shield,
+    images: [waterproofing1, waterproofing2, waterproofing3],
+    included: ['Surface assessment', 'Membrane application', 'Joint sealing', 'Drainage systems', 'Quality testing']
+  },
+  {
+    id: 'exterior-facade',
+    title: 'Exterior Facade',
+    description: 'Modern exterior facade solutions to enhance your building\'s appearance and durability.',
+    icon: Building2,
+    images: [facate, facate2, facate3, facate4, facate5, facate7, facate8, facate9, facte6],
+    included: ['Design consultation', 'Material selection', 'Professional installation', 'Weather protection', 'Aesthetic enhancement']
+  },
+  {
+    id: 'wall-stencil',
+    title: 'Wall Stencil',
+    description: 'Creative wall stenciling services to add artistic patterns and designs to your walls.',
+    icon: Palette,
+    images: [wallstencing, wallstencing1, wallstencing2, wallstencing3],
+    included: ['Custom design patterns', 'Professional application', 'Color coordination', 'Surface preparation', 'Artistic finishing']
+  },
+  {
+    id: 'false-ceiling',
+    title: 'False Ceiling',
+    description: 'Modern false ceiling solutions with integrated lighting and contemporary designs.',
+    icon: Layers,
+    images: [fastceiling],
+    included: ['Design consultation', 'Material supply', 'Professional installation', 'Lighting integration', 'Smooth finishing']
+  }
+]
 
 // Main Services - Residential and Commercial
 const mainServices = [
@@ -31,7 +176,6 @@ const mainServices = [
       'Outdoor living spaces',
       '3D visualization & renderings'
     ],
-    price: 'Starting from $2,500',
     gradient: 'from-pink-500 to-pink-400',
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80'
   },
@@ -300,7 +444,7 @@ export function Services() {
         </div>
       </section>
 
-      {/* Additional Services */}
+      {/* Our Services */}
       <section className="py-20 bg-muted/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -310,9 +454,9 @@ export function Services() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-block text-accent font-semibold mb-4">Specialized Services</span>
+            <span className="inline-block text-accent font-semibold mb-4">Our Services</span>
             <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-4">
-              Our Complete Construction & Design Services
+              Comprehensive Construction & Design Services
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               From prefab solutions to specialized installations, we offer comprehensive services for modern construction needs.
@@ -326,7 +470,7 @@ export function Services() {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {additionalServices.map((service, index) => (
+            {ourServices.map((service, index) => (
               <motion.div
                 key={service.id}
                 variants={fadeInVariants}
@@ -336,7 +480,7 @@ export function Services() {
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img 
-                    src={service.image} 
+                    src={service.images[0]} 
                     alt={service.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />

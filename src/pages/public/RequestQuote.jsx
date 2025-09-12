@@ -578,7 +578,7 @@ export function RequestQuote() {
                               {...register('phone')}
                               type="tel"
                               className="w-full px-4 py-3 border border-border rounded-lg bg-white focus:border-accent focus:outline-none"
-                              placeholder="+1 (555) 000-0000"
+                              placeholder="+91 84891 11000"
                             />
                             {errors.phone && (
                               <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>

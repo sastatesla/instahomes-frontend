@@ -182,11 +182,11 @@ export function Navigation() {
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
                       <Phone size={16} />
-                      <span>+1 (555) 123-4567</span>
+                      <span>84891 11000</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Mail size={16} />
-                      <span>hello@interiordesign.com</span>
+                      <span>info@vrikshaa.com</span>
                     </div>
                   </div>
                 </div>

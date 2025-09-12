@@ -75,7 +75,7 @@ export function Blog() {
               {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
-              Interior Design
+              Vrikshaa Space Creation
               <span className="block text-gradient">Blog & Inspiration</span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">

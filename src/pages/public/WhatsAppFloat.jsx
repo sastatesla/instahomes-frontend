@@ -14,8 +14,8 @@ const WhatsAppFloat = () => {
   }, []);
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "917904528778"; // Example: 919876543210 for +91 98765 43210
-    const message = encodeURIComponent("Hello! I'm interested in your interior design services.");
+    const phoneNumber = "918489111000"; // Vrikshaa Space Creation contact number
+    const message = encodeURIComponent("Hello! I'm interested in your interior design and construction services.");
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -44,7 +44,7 @@ const WhatsAppFloat = () => {
           {/* Left side - Text and arrow */}
           <div className="flex items-center space-x-3">
             <span className="text-gray-800 font-semibold text-lg">
-              Let's transform you space
+              Let's transform your space
             </span>
             
             {/* Arrow pointing right */}

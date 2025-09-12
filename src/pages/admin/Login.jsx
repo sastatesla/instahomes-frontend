@@ -193,7 +193,7 @@ export function Login() {
           className="text-center mt-8"
         >
           <p className="text-sm text-muted-foreground">
-            Interior Design Admin Portal • Version 1.0
+            Vrikshaa Space Creation Admin Portal • Version 1.0
           </p>
         </motion.div>
       </motion.div>
