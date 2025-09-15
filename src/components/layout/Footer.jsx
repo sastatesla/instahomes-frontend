@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { useSettings } from '../../hooks/useSettings'
-import vrikshalogo from '../../assets/images/vrikshalogo.png'
+import vrikshalogo from '../../assets/vrikshalogo.png'
 
 const footerSections = [
   {
@@ -50,12 +50,12 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // const socialLinks = [
-  //   { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
-  //   { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
-  //   { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
-  //   { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
-  // ].filter(link => link.href !== '#' && link.href)
+  const socialLinks = [
+    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
+    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
+    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
+    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
+  ].filter(link => link.href !== '#' && link.href)
 
   return (
     <footer className="bg-gradient-primary text-primary-foreground">
@@ -124,7 +124,7 @@ export function Footer() {
             </motion.div>
 
             {/* Social Links */}
-            {/* <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -143,7 +143,7 @@ export function Footer() {
                   <Icon size={20} />
                 </motion.a>
               ))}
-            </motion.div> */}
+            </motion.div>
           </div>
 
           {/* Footer Sections */}

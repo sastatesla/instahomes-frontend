@@ -72,7 +72,7 @@ export function Blog() {
           >
             <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">
               ✨ Design Insights
-              {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>}
+              {/* {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>} */}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
               Vrikshaa Space Creation

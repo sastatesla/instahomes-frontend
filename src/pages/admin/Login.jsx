@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { 
   LogIn, 
   Eye, 
@@ -23,8 +23,12 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const location = useLocation()
 
   const { login, isAuthenticated } = useAuth()
+
+  // Get the intended destination from state or default to dashboard
+  const from = location.state?.from?.pathname || '/admin'
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -36,7 +40,7 @@ export function Login() {
 
   // Redirect if already authenticated
   if (isAuthenticated) {
-    return <Navigate to="/admin" replace />
+    return <Navigate to={from} replace />
   }
 
   const onSubmit = async (data) => {

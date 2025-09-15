@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { portfolioAPI } from '../../lib/api'
 import { cn } from '../../lib/utils'
+import { ConfirmationModal } from '../../components/ui/ConfirmationModal'
 
 const portfolioSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -41,24 +42,73 @@ const portfolioSchema = z.object({
 
 const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' }) => {
   const [imageFiles, setImageFiles] = useState([])
-  const [imagePreviews, setImagePreviews] = useState(portfolio?.images || [])
-  const [tags, setTags] = useState(portfolio?.tags?.join(', ') || '')
+  const [imagePreviews, setImagePreviews] = useState([])
+  const [tags, setTags] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
     resolver: zodResolver(portfolioSchema),
     defaultValues: {
-      title: portfolio?.title || '',
-      description: portfolio?.description || '',
-      category: portfolio?.category || 'residential',
-      client: portfolio?.client || '',
-      location: portfolio?.location || '',
-      seoTitle: portfolio?.seoTitle || '',
-      seoDescription: portfolio?.seoDescription || '',
-      published: portfolio?.published || false,
-      featured: portfolio?.featured || false
+      title: '',
+      description: '',
+      category: 'residential',
+      client: '',
+      location: '',
+      seoTitle: '',
+      seoDescription: '',
+      published: false,
+      featured: false
     }
   })
+
+  // Reset form when portfolio changes or modal opens
+  useEffect(() => {
+    console.log('PortfolioModal useEffect triggered:', { isOpen, mode, portfolio: portfolio?.title })
+    
+    if (isOpen) {
+      if (portfolio && mode === 'edit') {
+        console.log('Setting form data for edit mode:', portfolio)
+        reset({
+          title: portfolio.title || '',
+          description: portfolio.description || '',
+          category: portfolio.category || 'residential',
+          client: portfolio.client || '',
+          location: portfolio.location || '',
+          seoTitle: portfolio.seoTitle || '',
+          seoDescription: portfolio.seoDescription || '',
+          published: portfolio.published || false,
+          featured: portfolio.featured || false
+        })
+        setTags(portfolio.tags?.join(', ') || '')
+        setImagePreviews(portfolio.images || [])
+        setImageFiles([])
+      } else if (mode === 'create') {
+        console.log('Clearing form for create mode')
+        // Clear all form fields
+        reset({
+          title: '',
+          description: '',
+          category: 'residential',
+          client: '',
+          location: '',
+          seoTitle: '',
+          seoDescription: '',
+          published: false,
+          featured: false
+        })
+        // Clear all state
+        setTags('')
+        setImagePreviews([])
+        setImageFiles([])
+        
+        // Force clear any file inputs
+        const fileInput = document.getElementById('images')
+        if (fileInput) {
+          fileInput.value = ''
+        }
+      }
+    }
+  }, [portfolio, mode, reset, isOpen])
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
@@ -111,7 +161,8 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
       }
     } catch (error) {
       console.error('Error saving portfolio:', error)
-      alert('Failed to save portfolio item')
+      // Note: We'll handle this error in the parent component
+      // For now, we'll just log it and let the user know via the form
     } finally {
       setIsSubmitting(false)
     }
@@ -137,6 +188,7 @@ const PortfolioModal = ({ portfolio, isOpen, onClose, onSave, mode = 'create' })
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold">
+
               {mode === 'create' ? 'Add New Portfolio Item' : 'Edit Portfolio Item'}
             </h2>
             <button onClick={onClose} className="p-2 hover:bg-muted rounded-lg">
@@ -360,6 +412,15 @@ export function AdminPortfolio() {
   const [viewMode, setViewMode] = useState('grid') // grid or list
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  
+  // Confirmation modal state
+  const [confirmationModal, setConfirmationModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+    type: 'warning'
+  })
 
   useEffect(() => {
     fetchPortfolios()
@@ -390,12 +451,14 @@ export function AdminPortfolio() {
   }
 
   const handleCreatePortfolio = () => {
+    console.log('handleCreatePortfolio called - clearing form for new portfolio')
     setSelectedPortfolio(null)
     setModalMode('create')
     setShowModal(true)
   }
 
   const handleEditPortfolio = (portfolio) => {
+    console.log('handleEditPortfolio called with:', portfolio)
     setSelectedPortfolio(portfolio)
     setModalMode('edit')
     setShowModal(true)
@@ -411,18 +474,38 @@ export function AdminPortfolio() {
     }
   }
 
-  const handleDeletePortfolio = async (portfolioId) => {
-    if (!confirm('Are you sure you want to delete this portfolio item?')) return
+  const handleCloseModal = () => {
+    console.log('Closing modal - resetting state')
+    setShowModal(false)
+    setSelectedPortfolio(null)
+    setModalMode('create')
+  }
 
-    try {
-      const response = await portfolioAPI.delete(portfolioId)
-      if (response.success) {
-        setPortfolios(prev => prev.filter(portfolio => portfolio._id !== portfolioId))
+  const handleDeletePortfolio = (portfolioId) => {
+    setConfirmationModal({
+      isOpen: true,
+      title: 'Delete Portfolio Item',
+      message: 'Are you sure you want to delete this portfolio item? This action cannot be undone.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await portfolioAPI.delete(portfolioId)
+          if (response.success) {
+            setPortfolios(prev => prev.filter(portfolio => portfolio._id !== portfolioId))
+          }
+        } catch (error) {
+          console.error('Error deleting portfolio:', error)
+          setConfirmationModal({
+            isOpen: true,
+            title: 'Error',
+            message: 'Failed to delete portfolio item. Please try again.',
+            type: 'danger',
+            onConfirm: () => setConfirmationModal(prev => ({ ...prev, isOpen: false }))
+          })
+        }
+        setConfirmationModal(prev => ({ ...prev, isOpen: false }))
       }
-    } catch (error) {
-      console.error('Error deleting portfolio:', error)
-      alert('Failed to delete portfolio item')
-    }
+    })
   }
 
   const handleTogglePublish = async (portfolio) => {
@@ -433,7 +516,13 @@ export function AdminPortfolio() {
       }
     } catch (error) {
       console.error('Error toggling publish status:', error)
-      alert('Failed to update publish status')
+      setConfirmationModal({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to update publish status. Please try again.',
+        type: 'danger',
+        onConfirm: () => setConfirmationModal(prev => ({ ...prev, isOpen: false }))
+      })
     }
   }
 
@@ -445,7 +534,13 @@ export function AdminPortfolio() {
       }
     } catch (error) {
       console.error('Error toggling featured status:', error)
-      alert('Failed to update featured status')
+      setConfirmationModal({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to update featured status. Please try again.',
+        type: 'danger',
+        onConfirm: () => setConfirmationModal(prev => ({ ...prev, isOpen: false }))
+      })
     }
   }
 
@@ -661,11 +756,23 @@ export function AdminPortfolio() {
       )}
 
       <PortfolioModal
+        key={selectedPortfolio?._id || 'create'}
         portfolio={selectedPortfolio}
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         onSave={handleSavePortfolio}
         mode={modalMode}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmationModal.isOpen}
+        onClose={() => setConfirmationModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmationModal.onConfirm}
+        title={confirmationModal.title}
+        message={confirmationModal.message}
+        type={confirmationModal.type}
+        confirmText={confirmationModal.type === 'danger' ? 'Delete' : 'Confirm'}
+        cancelText="Cancel"
       />
     </div>
   )

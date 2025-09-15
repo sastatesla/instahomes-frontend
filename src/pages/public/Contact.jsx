@@ -40,10 +40,10 @@ export function Contact() {
       icon: MapPin,
       title: 'Visit Our Studio',
       details: [
-        settings?.contactInfo?.address?.street || '123 Design Street',
+        settings?.contactInfo?.address?.street || '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere',
         settings?.contactInfo?.address ? 
           `${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
-          'Creative District, CC 12345'
+          'Bengaluru, Karnataka 560054'
       ],
       action: 'Get Directions'
     },
@@ -51,8 +51,8 @@ export function Contact() {
       icon: Phone,
       title: 'Call Us',
       details: [
-        settings?.contactInfo?.phone || '+1 (555) 123-4567',
-        'Mon-Fri 9AM-6PM PST'
+        settings?.contactInfo?.phone || '84891 11000',
+        'Mon-Fri 9AM-6PM IST'
       ],
       action: 'Call Now'
     },
@@ -60,7 +60,7 @@ export function Contact() {
       icon: Mail,
       title: 'Email Us',
       details: [
-        settings?.contactInfo?.email || 'hello@interiordesign.com',
+        settings?.contactInfo?.email || 'info@vrikshaa.com',
         'We reply within 24 hours'
       ],
       action: 'Send Email'
@@ -129,7 +129,6 @@ export function Contact() {
           >
             <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">
               ✨ Get In Touch
-              {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
               Let's Create Something
@@ -364,17 +363,17 @@ export function Contact() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Visit Our Design Studio</h3>
                 <p className="text-muted-foreground mb-4">
-                  Located in the heart of the creative district, our studio showcases 
-                  the latest in design trends and materials.
+                  Located in Mathikere, Bengaluru, our design studio showcases 
+                  the latest in interior design trends and construction materials.
                 </p>
                 <div className="bg-accent/5 rounded-lg p-4 text-sm">
                   <p className="font-medium">
-                    {settings?.contactInfo?.address?.street || '123 Design Street'}
+                    {settings?.contactInfo?.address?.street || '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere'}
                   </p>
                   <p className="text-muted-foreground">
                     {settings?.contactInfo?.address ? 
                       `${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
-                      'Creative District, CC 12345'
+                      'Bengaluru, Karnataka 560054'
                     }
                   </p>
                 </div>

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Star, Users, Award, Heart, Home as HomeIcon, Building2, HardHat, Palette, CheckCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn } from '../../lib/utils'
-import heroBackground from '../../assets/images/spacejoy-9M66C_w_ToM-unsplash.jpg'
+import heroBackground from '../../assets/spacejoy-9M66C_w_ToM-unsplash.jpg'
 
 const stats = [
   { icon: Users, label: 'Happy Clients', value: '500+' },

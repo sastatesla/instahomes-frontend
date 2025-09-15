@@ -237,8 +237,8 @@ export function Dashboard() {
             {[
               { title: 'View All Contacts', href: '/admin/contacts', icon: Users, color: 'bg-blue-500' },
               { title: 'Manage Quotes', href: '/admin/quotes', icon: FileText, color: 'bg-red-500' },
-              { title: 'Write Blog Post', href: '/admin/blog/new', icon: MessageSquare, color: 'bg-green-500' },
-              { title: 'Add Portfolio', href: '/admin/portfolio/new', icon: Image, color: 'bg-purple-500' }
+              { title: 'Write Blog Post', href: '/admin/blog', icon: MessageSquare, color: 'bg-green-500' },
+              { title: 'Add Portfolio', href: '/admin/portfolio', icon: Image, color: 'bg-purple-500' }
             ].map((action, index) => (
               <motion.a
                 key={index}

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Phone, Mail } from 'lucide-react'
 import { cn } from '../../lib/utils'
-import vrikshalogo from '../../assets/images/vrikshalogo.png'
+import vrikshalogo from '../../assets/vrikshalogo.png'
 
 const navigationItems = [
   { name: 'Home', href: '/' },

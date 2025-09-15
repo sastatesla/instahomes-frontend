@@ -60,25 +60,80 @@ const StatusBadge = ({ published, featured }) => (
 )
 
 const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) => {
-  const [tags, setTags] = useState(project?.tags?.join(', ') || '')
+  console.log('PortfolioModal rendered with:', { project: project?.title, isOpen, mode })
+  alert(`PortfolioModal rendered! Project: ${project?.title}, Mode: ${mode}, IsOpen: ${isOpen}`)
+  
+  const [tags, setTags] = useState('')
   const [imageFiles, setImageFiles] = useState([])
-  const [imagePreviews, setImagePreviews] = useState(project?.images?.map(img => img.url) || [])
+  const [imagePreviews, setImagePreviews] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset, getValues } = useForm({
     resolver: zodResolver(portfolioSchema),
     defaultValues: {
-      title: project?.title || '',
-      description: project?.description || '',
-      category: project?.category || 'residential',
-      location: project?.location || '',
-      client: project?.client || '',
-      seoTitle: project?.seoTitle || '',
-      seoDescription: project?.seoDescription || '',
-      published: project?.published || false,
-      featured: project?.featured || false
+      title: '',
+      description: '',
+      category: 'residential',
+      location: '',
+      client: '',
+      seoTitle: '',
+      seoDescription: '',
+      published: false,
+      featured: false
     }
   })
+
+  // Reset form when project changes or modal opens
+  useEffect(() => {
+    console.log('=== useEffect START ===')
+    console.log('PortfolioModal useEffect triggered:', { isOpen, mode, project: project?.title })
+    
+    if (isOpen) {
+      // Add a small delay to ensure the form is fully rendered
+      const timer = setTimeout(() => {
+        if (project && mode === 'edit') {
+          console.log('Setting form data for edit mode:', project)
+          
+          // Use setValue for each field individually
+          setValue('title', project.title || '')
+          setValue('description', project.description || '')
+          setValue('category', project.category || 'residential')
+          setValue('location', project.location || '')
+          setValue('client', project.client || '')
+          setValue('seoTitle', project.seoTitle || '')
+          setValue('seoDescription', project.seoDescription || '')
+          setValue('published', project.published || false)
+          setValue('featured', project.featured || false)
+          
+          setTags(project.tags?.join(', ') || '')
+          setImagePreviews(project.images?.map(img => img.url) || [])
+          setImageFiles([])
+          
+          console.log('Form values after setValue:', getValues())
+        } else if (mode === 'create') {
+          console.log('Setting form data for create mode')
+          setValue('title', '')
+          setValue('description', '')
+          setValue('category', 'residential')
+          setValue('location', '')
+          setValue('client', '')
+          setValue('seoTitle', '')
+          setValue('seoDescription', '')
+          setValue('published', false)
+          setValue('featured', false)
+          
+          setTags('')
+          setImagePreviews([])
+          setImageFiles([])
+        }
+      }, 100)
+
+      return () => clearTimeout(timer)
+    }
+  }, [project, mode, setValue, isOpen, getValues])
+
+  // Early return after useEffect
+  if (!isOpen) return null
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
@@ -134,8 +189,6 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
       setIsSubmitting(false)
     }
   }
-
-  if (!isOpen) return null
 
   return (
     <AnimatePresence>
@@ -349,6 +402,9 @@ const PortfolioModal = ({ project, isOpen, onClose, onSave, mode = 'create' }) =
 }
 
 export function PortfolioManagement() {
+  console.log('PortfolioManagement component loaded')
+  alert('TESTING - PortfolioManagement component loaded!')
+  
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -395,6 +451,8 @@ export function PortfolioManagement() {
   }
 
   const handleEditProject = (project) => {
+    console.log('handleEditProject called with:', project)
+    alert(`Edit clicked! Project: ${project?.title}`)
     setSelectedProject(project)
     setModalMode('edit')
     setShowModal(true)
@@ -452,8 +510,11 @@ export function PortfolioManagement() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-heading font-bold">Portfolio Management</h1>
+            <h1 className="text-3xl font-heading font-bold">🔥 PORTFOLIO MANAGEMENT - TESTING 🔥</h1>
             <p className="text-muted-foreground">Manage your project showcases</p>
+            <div style={{background: 'red', color: 'white', padding: '10px', margin: '10px 0'}}>
+              DEBUG: Component is working! File changes are being applied.
+            </div>
           </div>
           <button
             onClick={handleCreateProject}
@@ -621,6 +682,7 @@ export function PortfolioManagement() {
       </div>
 
       <PortfolioModal
+        key={selectedProject?._id || 'create'}
         project={selectedProject}
         isOpen={showModal}
         onClose={() => setShowModal(false)}

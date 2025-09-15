@@ -23,6 +23,7 @@ import {
 import { blogAPI } from '../../lib/api'
 import { RichTextEditor } from '../../components/admin/RichTextEditor'
 import { cn } from '../../lib/utils'
+import { ConfirmationModal } from '../../components/ui/ConfirmationModal'
 
 const blogSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),
@@ -60,37 +61,86 @@ const StatusBadge = ({ published, featured }) => (
 )
 
 const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
-  const [content, setContent] = useState(blog?.content || '')
-  const [tags, setTags] = useState(blog?.tags?.join(', ') || '')
+  const [content, setContent] = useState('')
+  const [tags, setTags] = useState('')
   const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(blog?.image?.url || null)
+  const [imagePreview, setImagePreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   console.log('BlogModal state:', { content: content.length, isSubmitting, mode, isOpen })
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
     resolver: zodResolver(blogSchema),
     defaultValues: {
-      title: blog?.title || '',
-      excerpt: blog?.excerpt || '',
-      content: blog?.content || '',
-      category: blog?.category || 'design-tips',
-      author: blog?.author || '',
-      published: blog?.published || false,
-      featured: blog?.featured || false,
-      seoTitle: blog?.seoTitle || '',
-      seoDescription: blog?.seoDescription || ''
+      title: '',
+      excerpt: '',
+      content: '',
+      category: 'design-tips',
+      author: '',
+      published: false,
+      featured: false,
+      seoTitle: '',
+      seoDescription: ''
     }
   })
 
   console.log('Form errors:', errors)
 
-  // Sync content with form when modal opens or content changes
+  // Handle form reset and data loading when modal opens or blog/mode changes
   useEffect(() => {
-    if (isOpen && content) {
+    console.log('BlogModal useEffect triggered:', { isOpen, mode, blog: blog?.title })
+    
+    if (isOpen) {
+      if (blog && mode === 'edit') {
+        console.log('Setting form data for edit mode:', blog)
+        reset({
+          title: blog.title || '',
+          excerpt: blog.excerpt || '',
+          content: blog.content || '',
+          category: blog.category || 'design-tips',
+          author: blog.author || '',
+          published: blog.published || false,
+          featured: blog.featured || false,
+          seoTitle: blog.seoTitle || '',
+          seoDescription: blog.seoDescription || ''
+        })
+        setContent(blog.content || '')
+        setTags(blog.tags?.join(', ') || '')
+        setImagePreview(blog.image?.url || null)
+        setImageFile(null)
+      } else if (mode === 'create') {
+        console.log('Clearing form for create mode')
+        reset({
+          title: '',
+          excerpt: '',
+          content: '',
+          category: 'design-tips',
+          author: '',
+          published: false,
+          featured: false,
+          seoTitle: '',
+          seoDescription: ''
+        })
+        setContent('')
+        setTags('')
+        setImagePreview(null)
+        setImageFile(null)
+        
+        // Clear file input
+        const fileInput = document.getElementById('image')
+        if (fileInput) {
+          fileInput.value = ''
+        }
+      }
+    }
+  }, [blog, mode, reset, isOpen])
+
+  // Sync content with form when content changes
+  useEffect(() => {
+    if (content) {
       setValue('content', content)
     }
-  }, [isOpen, content, setValue])
+  }, [content, setValue])
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -111,7 +161,7 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
     try {
       // Validate content length
       if (content.length < 50) {
-        alert('Content must be at least 50 characters long')
+        // Note: We'll handle this validation in the UI instead of alert
         setIsSubmitting(false)
         return
       }
@@ -144,7 +194,7 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
         onClose()
       } else {
         console.error('API returned error or no response:', response)
-        alert(response?.message || 'Failed to save blog post - no response received')
+        // Note: We'll handle this error in the parent component
       }
     } catch (error) {
       console.error('Error saving blog:', error)
@@ -154,7 +204,7 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
         data: error.data,
         stack: error.stack
       })
-      alert(`Failed to save blog post: ${error.message}`)
+      // Note: We'll handle this error in the parent component
     } finally {
       setIsSubmitting(false)
     }
@@ -168,7 +218,7 @@ const BlogModal = ({ blog, isOpen, onClose, onSave, mode = 'create' }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-white backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
@@ -391,6 +441,15 @@ export function BlogManagement() {
   const [modalMode, setModalMode] = useState('create')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  
+  // Confirmation modal state
+  const [confirmationModal, setConfirmationModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+    type: 'warning'
+  })
 
   useEffect(() => {
     fetchBlogs()
@@ -421,15 +480,24 @@ export function BlogManagement() {
   }
 
   const handleCreateBlog = () => {
+    console.log('handleCreateBlog called - clearing form for new blog')
     setSelectedBlog(null)
     setModalMode('create')
     setShowModal(true)
   }
 
   const handleEditBlog = (blog) => {
+    console.log('handleEditBlog called with:', blog)
     setSelectedBlog(blog)
     setModalMode('edit')
     setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    console.log('Closing modal - resetting state')
+    setShowModal(false)
+    setSelectedBlog(null)
+    setModalMode('create')
   }
 
   const handleSaveBlog = (savedBlog) => {
@@ -440,18 +508,31 @@ export function BlogManagement() {
     }
   }
 
-  const handleDeleteBlog = async (blogId) => {
-    if (!confirm('Are you sure you want to delete this blog post?')) return
-
-    try {
-      const response = await blogAPI.delete(blogId)
-      if (response.success) {
-        setBlogs(prev => prev.filter(blog => blog._id !== blogId))
+  const handleDeleteBlog = (blogId) => {
+    setConfirmationModal({
+      isOpen: true,
+      title: 'Delete Blog Post',
+      message: 'Are you sure you want to delete this blog post? This action cannot be undone.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const response = await blogAPI.delete(blogId)
+          if (response.success) {
+            setBlogs(prev => prev.filter(blog => blog._id !== blogId))
+          }
+        } catch (error) {
+          console.error('Error deleting blog:', error)
+          setConfirmationModal({
+            isOpen: true,
+            title: 'Error',
+            message: 'Failed to delete blog post. Please try again.',
+            type: 'danger',
+            onConfirm: () => setConfirmationModal(prev => ({ ...prev, isOpen: false }))
+          })
+        }
+        setConfirmationModal(prev => ({ ...prev, isOpen: false }))
       }
-    } catch (error) {
-      console.error('Error deleting blog:', error)
-      alert('Failed to delete blog post')
-    }
+    })
   }
 
   const handleTogglePublish = async (blog) => {
@@ -462,7 +543,13 @@ export function BlogManagement() {
       }
     } catch (error) {
       console.error('Error toggling publish status:', error)
-      alert('Failed to update publish status')
+      setConfirmationModal({
+        isOpen: true,
+        title: 'Error',
+        message: 'Failed to update publish status. Please try again.',
+        type: 'danger',
+        onConfirm: () => setConfirmationModal(prev => ({ ...prev, isOpen: false }))
+      })
     }
   }
 
@@ -645,11 +732,23 @@ export function BlogManagement() {
       </div>
 
       <BlogModal
+        key={selectedBlog?._id || 'create'}
         blog={selectedBlog}
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         onSave={handleSaveBlog}
         mode={modalMode}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmationModal.isOpen}
+        onClose={() => setConfirmationModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmationModal.onConfirm}
+        title={confirmationModal.title}
+        message={confirmationModal.message}
+        type={confirmationModal.type}
+        confirmText={confirmationModal.type === 'danger' ? 'Delete' : 'Confirm'}
+        cancelText="Cancel"
       />
     </>
   )

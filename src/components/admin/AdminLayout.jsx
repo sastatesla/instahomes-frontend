@@ -62,9 +62,9 @@ export function AdminLayout() {
   const location = useLocation()
   const { user, logout, isAuthenticated } = useAuth()
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated, preserving current location
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace />
+    return <Navigate to="/admin/login" state={{ from: location }} replace />
   }
 
   // Check if user has admin role
