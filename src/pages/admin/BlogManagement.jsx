@@ -515,13 +515,13 @@ export function BlogManagement() {
       message: 'Are you sure you want to delete this blog post? This action cannot be undone.',
       type: 'danger',
       onConfirm: async () => {
-        try {
-          const response = await blogAPI.delete(blogId)
-          if (response.success) {
-            setBlogs(prev => prev.filter(blog => blog._id !== blogId))
-          }
-        } catch (error) {
-          console.error('Error deleting blog:', error)
+    try {
+      const response = await blogAPI.delete(blogId)
+      if (response.success) {
+        setBlogs(prev => prev.filter(blog => blog._id !== blogId))
+      }
+    } catch (error) {
+      console.error('Error deleting blog:', error)
           setConfirmationModal({
             isOpen: true,
             title: 'Error',

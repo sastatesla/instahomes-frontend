@@ -348,40 +348,6 @@ export function Blog() {
           </AnimatePresence>
         </div>
       </section>
-
-      {/* Newsletter Subscription */}
-      <section className="py-20 bg-gradient-to-r from-accent to-accent/80 text-accent-foreground">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto"
-          >
-            <h2 className="text-3xl font-heading font-bold mb-4">
-              Stay Updated with Design Insights
-            </h2>
-            <p className="text-accent-foreground/90 mb-8 leading-relaxed">
-              Get the latest design trends, tips, and inspiration delivered to your inbox. 
-              Join our community of design enthusiasts.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent-foreground/20"
-              />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white text-foreground hover:bg-white/90 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-              >
-                Subscribe
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   )
 }

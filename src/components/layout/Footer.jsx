@@ -38,7 +38,6 @@ const footerSections = [
     links: [
       { name: 'Contact Us', href: '/contact' },
       { name: 'Request Quote', href: '/request-quote' },
-      { name: 'Privacy Policy', href: '/privacy' },
     ],
   },
 ]
@@ -51,10 +50,9 @@ export function Footer() {
   }
 
   const socialLinks = [
-    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#' },
-    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#' },
-    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#' },
-    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#' },
+    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || 'https://www.instagram.com/vrikshaa_space_creation?igsh=c3hkMXc2czI1dWxj' },
+    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || 'https://www.facebook.com/share/1BU8SGiyxX/' },
+    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || 'https://www.linkedin.com/in/shakila-dhanasekar-96aab1340?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app' },
   ].filter(link => link.href !== '#' && link.href)
 
   return (
@@ -115,11 +113,16 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Phone size={18} className="text-white" />
-                <span>{settings?.contactInfo?.phone || '84891 11000'}</span>
+                <div className="flex flex-col">
+                  <a href="tel:8489111000" className="hover:text-primary cursor-pointer transition-colors">84891 11000</a>
+                  <a href="tel:8971100172" className="hover:text-primary cursor-pointer transition-colors">8971100172</a>
+                </div>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail size={18} className="text-white" />
-                <span>{settings?.contactInfo?.email || 'info@vrikshaa.com'}</span>
+                <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors">
+                  {settings?.contactInfo?.email || 'info@vrikshaa.com'}
+                </a>
               </div>
             </motion.div>
 
@@ -173,36 +176,6 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Newsletter Signup */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 pt-8 border-t border-primary-foreground/10"
-        >
-          <div className="max-w-md">
-            <h3 className="font-semibold text-lg mb-4">Stay Updated</h3>
-            <p className="text-primary-foreground/70 text-sm mb-4">
-              Subscribe to our newsletter for the latest design trends and inspiration.
-            </p>
-            <form className="flex space-x-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
-              />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="px-6 py-2 bg-white hover:bg-white/90 text-primary rounded-lg font-medium transition-colors duration-200 shadow-lg"
-              >
-                Subscribe
-              </motion.button>
-            </form>
-          </div>
-        </motion.div>
 
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
@@ -223,7 +196,7 @@ export function Footer() {
             className="w-10 h-10 bg-white hover:bg-white/90 text-primary rounded-lg flex items-center justify-center transition-colors duration-200 shadow-lg shimmer"
             aria-label="Scroll to top"
           >
-            <ArrowUp size={20} />
+            <ArrowUp size={20} className="-mt-0.5" />
           </motion.button>
         </div>
       </div>

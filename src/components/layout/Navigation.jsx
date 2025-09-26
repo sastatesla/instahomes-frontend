@@ -50,15 +50,15 @@ export function Navigation() {
               : 'bg-transparent text-white'
         )}
       >
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <nav className="container mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to="/" className="flex items-center space-x-2">
                 <img
                   src={vrikshalogo}
                   alt="Vrikshaa Logo"
-                  className="w-25 h-20 rounded-lg object-contain"
+                  className="w-12 h-10 sm:w-16 sm:h-12 lg:w-20 lg:h-16 rounded-lg object-contain"
                 />
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-heading font-semibold">
@@ -99,7 +99,7 @@ export function Navigation() {
             </div>
 
             {/* CTA Button & Mobile Menu Toggle */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
               <motion.div
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -107,7 +107,7 @@ export function Navigation() {
               >
                 <Link
                   to="/request-quote"
-                  className="modern-button text-primary-foreground px-8 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="modern-button text-primary-foreground px-3 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm lg:text-base"
                 >
                   ✨ Get Quote
                 </Link>
@@ -118,7 +118,7 @@ export function Navigation() {
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleMenu}
                 className={cn(
-                  'lg:hidden p-2 rounded-lg transition-colors duration-200',
+                  'lg:hidden p-0.5 sm:p-1 rounded-lg transition-colors duration-200',
                   !isHomePage || isScrolled
                     ? 'hover:bg-gray-100 text-black'
                     : 'hover:bg-muted text-white'
@@ -134,7 +134,7 @@ export function Navigation() {
                       exit={{ rotate: 90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <X size={24} />
+                      <X size={18} className="sm:w-5 sm:h-5" />
                     </motion.div>
                   ) : (
                     <motion.div
@@ -144,7 +144,7 @@ export function Navigation() {
                       exit={{ rotate: -90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Menu size={24} />
+                      <Menu size={18} className="sm:w-5 sm:h-5" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -182,11 +182,14 @@ export function Navigation() {
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
                       <Phone size={16} />
-                      <span>84891 11000</span>
+                      <div className="flex flex-col">
+                        <a href="tel:8489111000" className="hover:text-primary cursor-pointer transition-colors text-sm">84891 11000</a>
+                        <a href="tel:8971100172" className="hover:text-primary cursor-pointer transition-colors text-sm">8971100172</a>
+                      </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Mail size={16} />
-                      <span>info@vrikshaa.com</span>
+                      <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors text-sm">info@vrikshaa.com</a>
                     </div>
                   </div>
                 </div>

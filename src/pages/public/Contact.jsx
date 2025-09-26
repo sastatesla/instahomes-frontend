@@ -51,7 +51,7 @@ export function Contact() {
       icon: Phone,
       title: 'Call Us',
       details: [
-        settings?.contactInfo?.phone || '84891 11000',
+        settings?.contactInfo?.phone || '84891 11000, 8971100172',
         'Mon-Fri 9AM-6PM IST'
       ],
       action: 'Call Now'
@@ -82,44 +82,69 @@ export function Contact() {
   ]
 
   const socialLinks = [
-    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || '#', color: 'hover:text-pink-500' },
-    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || '#', color: 'hover:text-blue-600' },
-    { name: 'Twitter', icon: Twitter, href: settings?.socialMedia?.twitter || '#', color: 'hover:text-sky-500' },
-    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || '#', color: 'hover:text-blue-700' }
+    { name: 'Instagram', icon: Instagram, href: settings?.socialMedia?.instagram || 'https://www.instagram.com/vrikshaa_space_creation?igsh=c3hkMXc2czI1dWxj', color: 'hover:text-pink-500' },
+    { name: 'Facebook', icon: Facebook, href: settings?.socialMedia?.facebook || 'https://www.facebook.com/share/1BU8SGiyxX/', color: 'hover:text-blue-600' },
+    { name: 'LinkedIn', icon: Linkedin, href: settings?.socialMedia?.linkedin || 'https://www.linkedin.com/in/shakila-dhanasekar-96aab1340?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app', color: 'hover:text-blue-700' }
   ].filter(link => link.href !== '#' && link.href)
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    resolver: zodResolver(contactSchema)
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+      projectType: 'residential'
+    }
   })
 
   const onSubmit = async (data) => {
     setIsSubmitting(true)
-    
     try {
-      const response = await contactAPI.submit(data)
-      
-      if (response.success) {
-        setIsSubmitted(true)
-        reset()
-        
-        // Reset success state after 5 seconds
-        setTimeout(() => setIsSubmitted(false), 5000)
-      } else {
-        console.error('Contact form submission failed:', response.message)
-        alert('Failed to submit contact form. Please try again.')
-      }
+      await contactAPI.submitContact(data)
+      setIsSubmitted(true)
+      reset()
     } catch (error) {
-      console.error('Contact form submission error:', error)
-      alert('An error occurred while submitting the form. Please try again.')
+      console.error('Error submitting contact form:', error)
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center bg-gradient-to-br from-cream via-background to-sand">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-md mx-auto p-8"
+        >
+          <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={40} className="text-accent-foreground" />
+          </div>
+          <h2 className="text-3xl font-heading font-bold mb-4 text-foreground">
+            Thank You!
+          </h2>
+          <p className="text-muted-foreground mb-6 leading-relaxed">
+            Your message has been sent successfully. We'll get back to you within 24 hours.
+          </p>
+          <button
+            onClick={() => setIsSubmitted(false)}
+            className="modern-button text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300"
+          >
+            Send Another Message
+          </button>
+        </motion.div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-pink-50 via-background to-blue-50 py-20">
+      <section className="bg-gradient-to-br from-cream via-background to-sand py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -127,23 +152,20 @@ export function Contact() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">
-              ✨ Get In Touch
-            </span>
+            <span className="inline-block text-accent font-semibold mb-4">Get In Touch</span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
               Let's Create Something
-              <span className="block text-gradient">Beautiful Together</span>
+              <span className="block text-gradient">Amazing Together</span>
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Ready to transform your space? We'd love to hear about your project and 
-              discuss how we can bring your vision to life.
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+              Ready to transform your space? We'd love to hear about your project and discuss how we can bring your vision to life.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Contact Info Cards */}
-      <section className="py-20 bg-white">
+      <section className="pt-2 pb-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {contactInfo.map((info, index) => (
@@ -161,9 +183,28 @@ export function Contact() {
                 </div>
                 <h3 className="font-semibold text-lg mb-3">{info.title}</h3>
                 <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                  {info.details.map((detail, idx) => (
-                    <p key={idx}>{detail}</p>
-                  ))}
+                  {info.details.map((detail, idx) => {
+                    if (info.title === 'Call Us' && idx === 0) {
+                      return (
+                        <div key={idx} className="space-y-1">
+                          <p>
+                            <a href="tel:8489111000" className="hover:text-primary cursor-pointer transition-colors">84891 11000</a>
+                          </p>
+                          <p>
+                            <a href="tel:8971100172" className="hover:text-primary cursor-pointer transition-colors">8971100172</a>
+                          </p>
+                        </div>
+                      );
+                    }
+                    if (info.title === 'Email Us' && idx === 0) {
+                      return (
+                        <p key={idx}>
+                          <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors">{detail}</a>
+                        </p>
+                      );
+                    }
+                    return <p key={idx}>{detail}</p>;
+                  })}
                 </div>
                 {info.action && (
                   <button className="text-primary hover:text-primary/80 font-medium text-sm transition-colors">
@@ -181,171 +222,130 @@ export function Contact() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="modern-card p-8"
             >
-              <div className="modern-card p-8">
-                <h2 className="text-2xl font-heading font-bold mb-2">Send us a message</h2>
-                <p className="text-muted-foreground mb-6">
-                  Fill out the form below and we'll get back to you within 24 hours.
+              <div className="mb-8">
+                <h2 className="text-3xl font-heading font-bold mb-4">Send Us a Message</h2>
+                <p className="text-muted-foreground">
+                  Fill out the form below and we'll get back to you as soon as possible.
                 </p>
-
-                {isSubmitted ? (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="text-center py-8"
-                  >
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle size={32} className="text-green-600" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
-                    <p className="text-muted-foreground">
-                      Thank you for contacting us. We'll get back to you soon.
-                    </p>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Full Name *
-                        </label>
-                        <input
-                          {...register('name')}
-                          type="text"
-                          className={cn(
-                            'w-full px-4 py-3 rounded-lg border bg-white transition-colors',
-                            errors.name 
-                              ? 'border-red-300 focus:border-red-500' 
-                              : 'border-border focus:border-primary'
-                          )}
-                          placeholder="Your full name"
-                        />
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          {...register('email')}
-                          type="email"
-                          className={cn(
-                            'w-full px-4 py-3 rounded-lg border bg-white transition-colors',
-                            errors.email 
-                              ? 'border-red-300 focus:border-red-500' 
-                              : 'border-border focus:border-primary'
-                          )}
-                          placeholder="your@email.com"
-                        />
-                        {errors.email && (
-                          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Phone Number
-                        </label>
-                        <input
-                          {...register('phone')}
-                          type="tel"
-                          className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
-                          placeholder="+1 (555) 000-0000"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Project Type *
-                        </label>
-                        <select
-                          {...register('projectType')}
-                          className={cn(
-                            'w-full px-4 py-3 rounded-lg border bg-white transition-colors',
-                            errors.projectType 
-                              ? 'border-red-300 focus:border-red-500' 
-                              : 'border-border focus:border-primary'
-                          )}
-                        >
-                          <option value="">Select project type</option>
-                          <option value="residential">Residential Design</option>
-                          <option value="commercial">Commercial Space</option>
-                          <option value="consultation">Consultation</option>
-                          <option value="other">Other</option>
-                        </select>
-                        {errors.projectType && (
-                          <p className="text-red-500 text-sm mt-1">{errors.projectType.message}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Subject *
-                      </label>
-                      <input
-                        {...register('subject')}
-                        type="text"
-                        className={cn(
-                          'w-full px-4 py-3 rounded-lg border bg-white transition-colors',
-                          errors.subject 
-                            ? 'border-red-300 focus:border-red-500' 
-                            : 'border-border focus:border-accent'
-                        )}
-                        placeholder="What can we help you with?"
-                      />
-                      {errors.subject && (
-                        <p className="text-red-500 text-sm mt-1">{errors.subject.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Message *
-                      </label>
-                      <textarea
-                        {...register('message')}
-                        rows={6}
-                        className={cn(
-                          'w-full px-4 py-3 rounded-lg border bg-white transition-colors resize-none',
-                          errors.message 
-                            ? 'border-red-300 focus:border-red-500' 
-                            : 'border-border focus:border-accent'
-                        )}
-                        placeholder="Tell us about your project, timeline, budget, and any specific requirements..."
-                      />
-                      {errors.message && (
-                        <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
-                      )}
-                    </div>
-
-                    <motion.button
-                      type="submit"
-                      disabled={isSubmitting}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={cn(
-                        'w-full modern-button text-primary-foreground px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl shimmer',
-                        isSubmitting && 'opacity-70 cursor-not-allowed'
-                      )}
-                    >
-                      {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-accent-foreground/30 border-t-accent-foreground rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <Send size={20} />
-                          <span>Send Message</span>
-                        </>
-                      )}
-                    </motion.button>
-                  </form>
-                )}
               </div>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      {...register('name')}
+                      type="text"
+                      className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
+                      placeholder="Your full name"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      {...register('email', { required: 'Email is required' })}
+                      type="email"
+                      className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
+                      placeholder="your.email@example.com"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      {...register('phone')}
+                      type="tel"
+                      className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Project Type *
+                    </label>
+                    <select
+                      {...register('projectType')}
+                      className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
+                    >
+                      <option value="residential">Residential</option>
+                      <option value="commercial">Commercial</option>
+                      <option value="consultation">Consultation</option>
+                      <option value="other">Other</option>
+                    </select>
+                    {errors.projectType && (
+                      <p className="text-red-500 text-sm mt-1">{errors.projectType.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Subject *
+                  </label>
+                  <input
+                    {...register('subject')}
+                    type="text"
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors"
+                    placeholder="What's this about?"
+                  />
+                  {errors.subject && (
+                    <p className="text-red-500 text-sm mt-1">{errors.subject.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Message *
+                  </label>
+                  <textarea
+                    {...register('message')}
+                    rows={6}
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:border-accent bg-white transition-colors resize-none"
+                    placeholder="Tell us about your project, timeline, budget, and any specific requirements..."
+                  />
+                  {errors.message && (
+                    <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
+                  )}
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full modern-button text-primary-foreground py-4 rounded-lg font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={20} />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </motion.button>
+              </form>
             </motion.div>
 
             {/* Map & Additional Info */}
@@ -353,85 +353,65 @@ export function Contact() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.6 }}
               className="space-y-8"
             >
-              {/* Map Placeholder */}
-              <div className="bg-muted/30 rounded-2xl p-8 text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin size={32} className="text-accent" />
+              {/* Google Maps */}
+              <div className="modern-card p-8">
+                <h3 className="text-xl font-heading font-bold mb-4">Visit Our Studio</h3>
+                <div className="rounded-lg overflow-hidden h-64 border border-border">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.1234567890!2d77.1234567890!3d12.1234567890!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s14.54%2C%20Ground%20Floor%2C%201st%20Main%20Road%2C%20Opp.%20MSR%20Plaza%2C%20Mathikere%2C%20Bengaluru%2C%20Karnataka%20560054!5e0!3m2!1sen!2sin!4v1234567890!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Vrikshaa Space Creation Location"
+                  />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Visit Our Design Studio</h3>
-                <p className="text-muted-foreground mb-4">
-                  Located in Mathikere, Bengaluru, our design studio showcases 
-                  the latest in interior design trends and construction materials.
+                <p className="text-sm text-muted-foreground mt-4">
+                  {settings?.contactInfo?.address?.street || '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere'}, 
+                  {settings?.contactInfo?.address?.city || 'Bengaluru'}, 
+                  {settings?.contactInfo?.address?.state || 'Karnataka'} 
+                  {settings?.contactInfo?.address?.zipCode || '560054'}
                 </p>
-                <div className="bg-accent/5 rounded-lg p-4 text-sm">
-                  <p className="font-medium">
-                    {settings?.contactInfo?.address?.street || '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere'}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {settings?.contactInfo?.address ? 
-                      `${settings.contactInfo.address.city}, ${settings.contactInfo.address.state} ${settings.contactInfo.address.zipCode}` :
-                      'Bengaluru, Karnataka 560054'
-                    }
-                  </p>
-                </div>
-                <button className="mt-4 text-accent hover:text-accent/80 font-medium transition-colors">
-                  View on Google Maps
-                </button>
-              </div>
-
-              {/* FAQ Section */}
-              <div className="bg-muted/20 rounded-2xl p-8">
-                <h3 className="text-xl font-semibold mb-6">Frequently Asked Questions</h3>
-                <div className="space-y-4">
-                  {[
-                    {
-                      q: "How long does a typical project take?",
-                      a: "Project timelines vary based on scope, but most residential projects take 6-12 weeks from concept to completion."
-                    },
-                    {
-                      q: "Do you work with existing furniture?",
-                      a: "Absolutely! We love incorporating pieces you already own and love into the new design."
-                    },
-                    {
-                      q: "What's included in the consultation?",
-                      a: "Our consultation includes space assessment, style discussion, budget planning, and initial design concepts."
-                    }
-                  ].map((faq, index) => (
-                    <div key={index} className="border-b border-border pb-4 last:border-b-0">
-                      <h4 className="font-medium mb-2">{faq.q}</h4>
-                      <p className="text-sm text-muted-foreground">{faq.a}</p>
-                    </div>
-                  ))}
+                <div className="mt-4">
+                  <a
+                    href="https://maps.app.goo.gl/pG83GJNm5EnHJNnn9?g_st=ipc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 text-accent hover:text-accent/80 font-medium transition-colors"
+                  >
+                    <MapPin size={16} />
+                    <span>Get Directions</span>
+                  </a>
                 </div>
               </div>
 
               {/* Social Links */}
-              <div className="text-center">
-                <h3 className="font-semibold mb-4">Follow Our Journey</h3>
-                <div className="flex justify-center space-x-4">
+              <div className="modern-card p-8">
+                <h3 className="text-xl font-heading font-bold mb-4">Follow Us</h3>
+                <p className="text-muted-foreground mb-6">
+                  Stay updated with our latest projects and design inspiration.
+                </p>
+                <div className="flex space-x-4">
                   {socialLinks.map(({ name, icon: Icon, href, color }) => (
                     <motion.a
                       key={name}
                       href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className={cn(
-                        'w-12 h-12 bg-muted/30 hover:bg-muted/50 rounded-xl flex items-center justify-center transition-all duration-300',
-                        color
-                      )}
+                      className={`w-12 h-12 bg-muted/20 hover:bg-muted/40 rounded-lg flex items-center justify-center transition-all duration-300 ${color}`}
                       aria-label={name}
                     >
-                      <Icon size={24} />
+                      <Icon size={20} />
                     </motion.a>
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground mt-4">
-                  Get daily inspiration and behind-the-scenes content
-                  {!isFromAPI && <span className="ml-2 text-xs text-amber-600 opacity-75">(Demo Links)</span>}
-                </p>
               </div>
             </motion.div>
           </div>

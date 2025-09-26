@@ -14,7 +14,7 @@ const WhatsAppFloat = () => {
   }, []);
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "918489111000"; // Vrikshaa Space Creation contact number
+    const phoneNumber = "918489111000"; // Vrikshaa Space Creation contact number (primary)
     const message = encodeURIComponent("Hello! I'm interested in your interior design and construction services.");
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(whatsappUrl, '_blank');

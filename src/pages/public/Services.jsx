@@ -86,6 +86,14 @@ const ourServices = [
     included: ['Structural design', 'Premium materials', 'Modern layouts', 'Smart home integration', 'Quality assurance']
   },
   {
+    id: 'upvc soffit panels and baffle ceilings',
+    title: 'uPVC Soffit Panels and Baffle Ceilings',
+    description: 'High-quality soffit panels for ceiling, floor, and wall applications with modern aesthetics.',
+    icon: PanelBottom,
+    images: [soffit1, soffit2, soffit3],
+    included: ['Ceiling panels', 'Floor panels', 'Wall panels', 'Professional installation', 'Custom sizing']
+  },
+  {
     id: 'modular-kitchens',
     title: 'Modular Kitchens',
     description: 'Custom modular kitchen designs with premium finishes and smart storage solutions.',
@@ -118,14 +126,7 @@ const ourServices = [
     images: [upvc1, upvc2],
     included: ['Custom sizing', 'Professional installation', 'Weather sealing', 'Hardware fitting', 'Energy efficiency']
   },
-  {
-    id: 'soffit-panels',
-    title: 'Soffit Panels',
-    description: 'High-quality soffit panels for ceiling, floor, and wall applications with modern aesthetics.',
-    icon: PanelBottom,
-    images: [soffit1, soffit2, soffit3],
-    included: ['Ceiling panels', 'Floor panels', 'Wall panels', 'Professional installation', 'Custom sizing']
-  },
+ 
   {
     id: 'wall-stencil',
     title: 'Wall Stencil',
@@ -269,6 +270,9 @@ const processSteps = [
     description: 'We complete final inspections and hand over your perfectly finished project.',
   }
 ]
+
+// Icons for each process step (aligned by index)
+const processIcons = [Home, Grid3X3, Layers, HardHat, CheckCircle]
 
 export function Services() {
   return (
@@ -483,92 +487,6 @@ export function Services() {
         </div>
       </section>
 
-      {/* Additional Services Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="inline-block text-accent font-semibold mb-4">Specialized Services</span>
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold mb-4">
-              Advanced Construction & Design Solutions
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Beyond our core services, we offer specialized construction and design solutions for complex projects.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={staggerChildren}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {additionalServices.map((service, index) => (
-              <motion.div
-                key={service.id}
-                variants={fadeInVariants}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-border"
-              >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={service.image} 
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  <div className="absolute top-4 right-4">
-                    <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                      <service.icon size={20} className="text-white" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-heading font-bold mb-3 group-hover:text-accent transition-colors duration-300">
-                    {service.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  {/* What's Included */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-sm mb-3 text-foreground">What's Included:</h4>
-                    <ul className="space-y-2">
-                      {service.included.map((item, itemIndex) => (
-                        <li key={itemIndex} className="flex items-center space-x-2 text-xs text-muted-foreground">
-                          <CheckCircle size={12} className="text-accent flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <Link to={`/request-quote?service=${service.id}`}>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full bg-accent/10 hover:bg-accent hover:text-accent-foreground text-accent py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2"
-                    >
-                      <span>Get Quote</span>
-                      <ArrowRight size={16} />
-                    </motion.button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Process Section */}
       <section className="py-20 bg-primary text-primary-foreground">
@@ -590,27 +508,61 @@ export function Services() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {processSteps.map((step, index) => (
+          {/* Timeline Container */}
+          <div className="relative">
+            {/* Horizontal connector on large screens */}
+            <div className="hidden lg:block absolute top-12 left-0 right-0 h-0.5 bg-white/20" />
+            {/* Vertical connector on small/medium screens */}
+            <div className="lg:hidden absolute left-8 top-0 bottom-0 w-0.5 bg-white/15" />
+
+            <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-8 relative">
+              {processSteps.map((step, index) => {
+                const Icon = processIcons[index] || CheckCircle
+                return (
               <motion.div
                 key={step.number}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center group"
-              >
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-6 text-accent-foreground font-bold text-xl group-hover:scale-110 transition-transform duration-300">
-                  {step.number}
+                    transition={{ duration: 0.6, delay: index * 0.08 }}
+                    className="relative group"
+                  >
+                    {/* Connector dot for small/medium screens */}
+                    <div className="lg:hidden absolute -left-1 top-8 w-3 h-3 rounded-full bg-accent shadow ring-2 ring-white/30" />
+
+                    {/* Step Card */}
+                    <div className="modern-card bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 h-full hover:bg-white/15 transition-colors duration-300">
+                      {/* Step Header */}
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="relative">
+                          <div className="w-14 h-14 rounded-2xl bg-accent/90 text-accent-foreground flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                            <Icon size={22} />
+                          </div>
+                          <span className="absolute -top-2 -right-2 text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full tracking-wide">
+                            Step {step.number}
+                          </span>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-accent transition-colors duration-300">
+                        <h3 className="text-lg sm:text-xl font-semibold group-hover:text-accent transition-colors">
                   {step.title}
                 </h3>
-                <p className="text-primary-foreground/70 text-sm leading-relaxed">
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-primary-foreground/80 text-sm leading-relaxed">
                   {step.description}
                 </p>
+
+                      {/* Progress Indicator (large screens) */}
+                      <div className="hidden lg:block mt-6">
+                        <div className="h-1 w-full bg-white/15 rounded">
+                          <div className="h-1 bg-accent rounded" style={{ width: `${(index + 1) * 20}%` }} />
+                        </div>
+                      </div>
+                    </div>
               </motion.div>
-            ))}
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>

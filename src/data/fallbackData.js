@@ -255,7 +255,7 @@ export const FALLBACK_SETTINGS = {
   
   contactInfo: {
     email: 'info@vrikshaa.com',
-    phone: '84891 11000',
+    phone: '84891 11000, 8971100172',
     address: {
       street: '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere',
       city: 'Bengaluru',

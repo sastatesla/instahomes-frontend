@@ -488,13 +488,13 @@ export function AdminPortfolio() {
       message: 'Are you sure you want to delete this portfolio item? This action cannot be undone.',
       type: 'danger',
       onConfirm: async () => {
-        try {
-          const response = await portfolioAPI.delete(portfolioId)
-          if (response.success) {
-            setPortfolios(prev => prev.filter(portfolio => portfolio._id !== portfolioId))
-          }
-        } catch (error) {
-          console.error('Error deleting portfolio:', error)
+    try {
+      const response = await portfolioAPI.delete(portfolioId)
+      if (response.success) {
+        setPortfolios(prev => prev.filter(portfolio => portfolio._id !== portfolioId))
+      }
+    } catch (error) {
+      console.error('Error deleting portfolio:', error)
           setConfirmationModal({
             isOpen: true,
             title: 'Error',
