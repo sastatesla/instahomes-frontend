@@ -33,8 +33,8 @@ export function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'admin@interiordesign.com',
-      password: 'admin123'
+      email: '',
+      password: ''
     }
   })
 
@@ -156,7 +156,7 @@ export function Login() {
               whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
               whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               className={cn(
-                'w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2',
+                'w-full bg-blue-500 hover:bg-accent/90 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2',
                 isSubmitting && 'opacity-70 cursor-not-allowed'
               )}
             >
@@ -181,11 +181,11 @@ export function Login() {
             transition={{ delay: 0.8 }}
             className="mt-6 p-4 bg-muted/30 rounded-lg"
           >
-            <p className="text-sm text-muted-foreground text-center">
+            {/* <p className="text-sm text-muted-foreground text-center">
               <strong>Demo Credentials:</strong><br />
               Email: admin@interiordesign.com<br />
               Password: admin123
-            </p>
+            </p> */}
           </motion.div>
         </motion.div>
 

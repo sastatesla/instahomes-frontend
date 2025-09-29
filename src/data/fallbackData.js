@@ -254,7 +254,7 @@ export const FALLBACK_SETTINGS = {
   companyDescription: 'We are a full-service interior design and construction company specializing in residential and commercial spaces.',
   
   contactInfo: {
-    email: 'info@vrikshaa.com',
+    email: 'info@vrikshaainteriors.com',
     phone: '84891 11000, 8971100172',
     address: {
       street: '14. 54, Ground Floor, 1st Main Road, Opp. MSR Plaza, Mathikere',
@@ -275,11 +275,10 @@ export const FALLBACK_SETTINGS = {
   },
 
   socialMedia: {
-    facebook: 'https://facebook.com/interiordesignstudio',
-    instagram: 'https://instagram.com/interiordesignstudio',
-    twitter: 'https://twitter.com/interiordesignstudio',
-    linkedin: 'https://linkedin.com/company/interiordesignstudio',
-    pinterest: 'https://pinterest.com/interiordesignstudio'
+    facebook: 'https://www.facebook.com/share/1BU8SGiyxX/',
+    instagram: 'https://www.instagram.com/vrikshaa_space_creation?igsh=c3hkMXc2czI1dWxj',
+    // twitter: 'https://twitter.com/interiordesignstudio',
+    linkedin: 'https://www.linkedin.com/in/shakila-dhanasekar-96aab1340?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
   },
 
   seo: {

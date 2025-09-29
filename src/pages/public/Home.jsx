@@ -249,7 +249,7 @@ export function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="  mt-20 sm:mt-20"
             >
-                <span className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-600 shimmer rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg text-white">
+                <span className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-600/60 shimmer rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg text-white">
                   ✨ Your Space , Our Expertise
               </span>
             </motion.div>

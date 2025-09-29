@@ -60,8 +60,8 @@ export function Navigation() {
                   alt="Vrikshaa Logo"
                   className="w-12 h-10 sm:w-16 sm:h-12 lg:w-20 lg:h-16 rounded-lg object-contain"
                 />
-                <div className="hidden sm:block">
-                  <h1 className="text-xl font-heading font-semibold">
+                <div className="sm:block">
+                  <h1 className="md:text-xl text-md font-heading font-semibold">
                     Vrikshaa Space Creation
                   </h1>
                   <p className="text-xs text-muted-foreground -mt-1">
@@ -177,7 +177,7 @@ export function Navigation() {
             >
               <div className="p-6 pt-24">
                 {/* Contact Info */}
-                <div className="mb-8 p-4 bg-muted rounded-lg">
+                {/* <div className="mb-8 p-4 bg-muted rounded-lg">
                   <h3 className="font-semibold mb-3">Get In Touch</h3>
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
@@ -192,7 +192,7 @@ export function Navigation() {
                       <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors text-sm">info@vrikshaa.com</a>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Navigation Links */}
                 <nav className="space-y-4">

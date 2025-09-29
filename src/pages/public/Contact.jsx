@@ -60,7 +60,7 @@ export function Contact() {
       icon: Mail,
       title: 'Email Us',
       details: [
-        settings?.contactInfo?.email || 'info@vrikshaa.com',
+        settings?.contactInfo?.email || 'info@vrikshaainteriors.com',
         'We reply within 24 hours'
       ],
       action: 'Send Email'
@@ -102,7 +102,7 @@ export function Contact() {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      await contactAPI.submitContact(data)
+      await contactAPI.submit(data)
       setIsSubmitted(true)
       reset()
     } catch (error) {
@@ -199,7 +199,7 @@ export function Contact() {
                     if (info.title === 'Email Us' && idx === 0) {
                       return (
                         <p key={idx}>
-                          <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors">{detail}</a>
+                          <a href="mailto:info@vrikshaainteriors.com" className="hover:text-primary cursor-pointer transition-colors">{detail}</a>
                         </p>
                       );
                     }

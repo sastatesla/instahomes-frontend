@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Search, Calendar, Clock, ArrowRight, Tag, User } from 'lucide-react'
-import { fadeInVariants, staggerChildren, slugify, formatDate, truncateText } from '../../lib/utils'
+import { Search, Calendar, Clock, ArrowRight, User } from 'lucide-react'
+import { fadeInVariants, staggerChildren, formatDate } from '../../lib/utils'
 import { useDataWithFallback } from '../../hooks/useDataWithFallback'
 import { blogAPI } from '../../lib/api'
 import { transformBlogData } from '../../lib/dataTransforms'
@@ -15,49 +15,63 @@ export function Blog() {
   const [activeCategory, setActiveCategory] = useState('all')
 
   // Fetch blog data with fallback
-  const { 
-    data: blogPosts, 
-    isLoading, 
-    isFromAPI, 
-    error 
+  const {
+    data: blogPosts,
+    isLoading,
+    isFromAPI,
+    error,
   } = useDataWithFallback(
     () => blogAPI.getAll({ published: true }),
     FALLBACK_BLOG_POSTS,
     [],
     {
       transform: transformBlogData,
-      onSuccess: (data) => console.log('✅ Blog data loaded from API:', data.length, 'posts'),
-      onError: (error) => console.log('⚠️ Using fallback blog data:', error.message)
+      onSuccess: (data) => {
+        if (!data || data.length === 0) {
+          console.log('⚠️ API returned no posts, using fallback data')
+        } else {
+          console.log('✅ Blog data loaded from API:', data.length, 'posts')
+        }
+      },
+      onError: (error) =>
+        console.log('⚠️ Using fallback blog data:', error.message),
     }
   )
 
+  // ✅ Ensure we always have posts (handles empty API success case)
+  const effectivePosts =
+    blogPosts && blogPosts.length > 0 ? blogPosts : FALLBACK_BLOG_POSTS
+
   const filteredPosts = useMemo(() => {
-    let posts = blogPosts || FALLBACK_BLOG_POSTS
+    let posts = effectivePosts
 
     // Filter by category
     if (activeCategory !== 'all') {
-      posts = posts.filter(post => post.category === activeCategory)
+      posts = posts.filter((post) => post.category === activeCategory)
     }
 
     // Filter by search term
     if (searchTerm) {
-      posts = posts.filter(post =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      posts = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.tags.some((tag) =>
+            tag.toLowerCase().includes(searchTerm.toLowerCase())
+          )
       )
     }
 
     return posts
-  }, [blogPosts, searchTerm, activeCategory])
+  }, [effectivePosts, searchTerm, activeCategory])
 
   const featuredPosts = useMemo(() => {
-    return (blogPosts || FALLBACK_BLOG_POSTS).filter(post => post.featured)
-  }, [blogPosts])
+    return effectivePosts.filter((post) => post.featured)
+  }, [effectivePosts])
 
   const latestPosts = useMemo(() => {
-    return (blogPosts || FALLBACK_BLOG_POSTS).slice(0, 3)
-  }, [blogPosts])
+    return effectivePosts.slice(0, 3)
+  }, [effectivePosts])
 
   return (
     <div className="min-h-screen pt-20">
@@ -72,15 +86,15 @@ export function Blog() {
           >
             <span className="inline-block bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full font-semibold mb-4 shadow-lg">
               ✨ Design Insights
-              {/* {isFromAPI && <span className="ml-2 text-xs opacity-75">(Live)</span>} */}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
               Vrikshaa Space Creation
               <span className="block text-gradient">Blog & Inspiration</span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover the latest trends, expert tips, and behind-the-scenes stories from 
-              the world of interior design. Get inspired for your next project.
+              Discover the latest trends, expert tips, and behind-the-scenes
+              stories from the world of interior design. Get inspired for your
+              next project.
             </p>
           </motion.div>
         </div>
@@ -114,11 +128,11 @@ export function Blog() {
                     <div className="relative aspect-[16/10] overflow-hidden">
                       <img
                         src={post.image}
-                        alt={post.title}
+                        alt={`Interior design article: ${post.title}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      
+
                       <div className="absolute top-4 left-4">
                         <span className="bg-gradient-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium shadow-lg">
                           ✨ Featured
@@ -152,13 +166,16 @@ export function Blog() {
 
                       <div className="flex items-center justify-between">
                         <div className="flex flex-wrap gap-2">
-                          {post.tags.slice(0, 3).map(tag => (
-                            <span key={tag} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded">
+                          {post.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs bg-accent/10 text-accent px-2 py-1 rounded"
+                            >
                               {tag}
                             </span>
                           ))}
                         </div>
-                        
+
                         <div className="flex items-center space-x-2 text-primary group-hover:translate-x-1 transition-transform duration-300">
                           <span className="text-sm font-medium">Read More</span>
                           <ArrowRight size={16} />
@@ -179,7 +196,10 @@ export function Blog() {
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             {/* Search Bar */}
             <div className="relative flex-1 max-w-md lg:max-w-lg">
-              <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search
+                size={20}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 type="text"
                 placeholder="Search articles..."
@@ -191,7 +211,7 @@ export function Blog() {
 
             {/* Category Filter */}
             <div className="flex flex-wrap gap-2">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <motion.button
                   key={category.id}
                   whileHover={{ scale: 1.05 }}
@@ -216,20 +236,26 @@ export function Blog() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-2xl font-heading font-bold">
-              {searchTerm ? `Search Results for "${searchTerm}"` : 
-               activeCategory === 'all' ? 'All Articles' : 
-               categories.find(cat => cat.id === activeCategory)?.name}
+              {searchTerm
+                ? `Search Results for "${searchTerm}"`
+                : activeCategory === 'all'
+                ? 'All Articles'
+                : categories.find((cat) => cat.id === activeCategory)?.name}
             </h2>
             <p className="text-muted-foreground">
-              {filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''}
+              {filteredPosts.length} article
+              {filteredPosts.length !== 1 ? 's' : ''}
               {!isFromAPI && (
-                <span className="ml-2 text-xs text-amber-600 opacity-75">(Demo)</span>
+                <span className="ml-2 text-xs text-amber-600 opacity-75">
+                  (Demo)
+                </span>
               )}
             </p>
           </div>
 
           <AnimatePresence mode="wait">
             {isLoading ? (
+              // Loading Skeleton
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -237,7 +263,10 @@ export function Blog() {
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {[...Array(6)].map((_, index) => (
-                  <div key={index} className="modern-card overflow-hidden animate-pulse">
+                  <div
+                    key={index}
+                    className="modern-card overflow-hidden animate-pulse"
+                  >
                     <div className="aspect-[16/10] bg-muted"></div>
                     <div className="p-6">
                       <div className="flex space-x-2 mb-4">
@@ -258,6 +287,7 @@ export function Blog() {
                 ))}
               </motion.div>
             ) : filteredPosts.length > 0 ? (
+              // Posts Grid
               <motion.div
                 key={`${activeCategory}-${searchTerm}`}
                 variants={staggerChildren}
@@ -266,7 +296,7 @@ export function Blog() {
                 exit="hidden"
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {filteredPosts.map((post, index) => (
+                {filteredPosts.map((post) => (
                   <motion.article
                     key={post.id}
                     variants={fadeInVariants}
@@ -277,7 +307,7 @@ export function Blog() {
                       <div className="relative aspect-[16/10] overflow-hidden">
                         <img
                           src={post.image}
-                          alt={post.title}
+                          alt={`Interior design article: ${post.title}`}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         <div className="absolute top-3 left-3">
@@ -306,14 +336,20 @@ export function Blog() {
 
                         <div className="flex items-center justify-between">
                           <div className="flex flex-wrap gap-1">
-                            {post.tags.slice(0, 2).map(tag => (
-                              <span key={tag} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded">
+                            {post.tags.slice(0, 2).map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-xs bg-accent/10 text-accent px-2 py-1 rounded"
+                              >
                                 {tag}
                               </span>
                             ))}
                           </div>
-                          
-                          <ArrowRight size={16} className="text-accent group-hover:translate-x-1 transition-transform duration-300" />
+
+                          <ArrowRight
+                            size={16}
+                            className="text-accent group-hover:translate-x-1 transition-transform duration-300"
+                          />
                         </div>
                       </div>
                     </Link>
@@ -321,6 +357,7 @@ export function Blog() {
                 ))}
               </motion.div>
             ) : (
+              // No Results
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -332,7 +369,8 @@ export function Blog() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">No articles found</h3>
                 <p className="text-muted-foreground mb-6">
-                  Try adjusting your search terms or browse different categories.
+                  Try adjusting your search terms or browse different
+                  categories.
                 </p>
                 <button
                   onClick={() => {

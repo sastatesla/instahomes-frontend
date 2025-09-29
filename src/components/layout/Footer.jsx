@@ -120,8 +120,8 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail size={18} className="text-white" />
-                <a href="mailto:info@vrikshaa.com" className="hover:text-primary cursor-pointer transition-colors">
-                  {settings?.contactInfo?.email || 'info@vrikshaa.com'}
+                <a href="mailto:info@vrikshaainteriors.com" className="hover:text-primary cursor-pointer transition-colors">
+                  {settings?.contactInfo?.email || 'info@vrikshaainteriors.com'}
                 </a>
               </div>
             </motion.div>
@@ -140,7 +140,7 @@ export function Footer() {
                   href={href}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200 shimmer"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200"
                   aria-label={name}
                 >
                   <Icon size={20} />

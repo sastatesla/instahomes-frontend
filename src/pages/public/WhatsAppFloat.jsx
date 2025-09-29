@@ -31,7 +31,7 @@ const WhatsAppFloat = () => {
     >
       <motion.button
         onClick={handleWhatsAppClick}
-        className="group relative w-full max-w-md mx-auto lg:mx-0 lg:w-auto bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500/30 overflow-hidden"
+        className="group shimmer relative w-full max-w-md mx-auto lg:mx-0 lg:w-auto bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500/30 overflow-hidden"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         aria-label="Let's get started - Contact us on WhatsApp"
@@ -44,7 +44,7 @@ const WhatsAppFloat = () => {
           {/* Left side - Text and arrow */}
           <div className="flex items-center space-x-3">
             <span className="text-gray-800 font-semibold text-lg">
-              Let's transform your space
+              Let's connect
             </span>
             
             {/* Arrow pointing right */}
