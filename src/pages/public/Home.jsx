@@ -249,7 +249,7 @@ export function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="  mt-20 sm:mt-20"
             >
-                <span className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-600/60 shimmer rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg text-white">
+                <span className="inline-flex items-center px-3 py-1.5 sm:px-4 bg-gray-600/60 shimmer rounded-full text-xs sm:text-sm font-medium sm:mb-6 shadow-lg text-white">
                   ✨ Your Space , Our Expertise
               </span>
             </motion.div>
@@ -258,29 +258,25 @@ export function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-heading font-bold text-white mb-4 sm:mb-6 leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-heading font-bold text-white sm:mb-6 leading-none "
             >
               Transform Your Space Into
-              <span className="block text-gradient mt-1 sm:mt-2">
-                Something Beautiful
+              <span className="block text-gradient leading-none sm:mt-2">
+                Something Beautiful        
               </span>
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-base sm:text-lg md:text-lg text-amber-100 max-w-3xl mx-auto mb-6 sm:mb-10 leading-relaxed"
-            >
-              Partnering with:
-            </motion.p>
+                <span className="inline-flex items-center px-3 py-1 sm:px-4 bg-gray-600/60 shimmer rounded-full text-xs sm:text-sm font-medium sm:mb-6 shadow-lg text-white">
+          
+              Partnering with
+            </span>
 
             {/* Brand Logos */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex lg:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-8 mb-6 sm:mb-10 px-1 overflow-hidden"
+              className="flex lg:flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-x-8 sm:mb-10 overflow-hidden"
             >
               {/* Mobile & Tablet Carousel Container */}
               <div className="flex lg:hidden animate-scroll">
@@ -420,7 +416,7 @@ export function Home() {
               </div>
 
               {/* Desktop Static Layout */}
-              <div className="hidden lg:flex flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-8">
+              <div className="hidden lg:flex flex-wrap justify-center items-center gap-1 xs:gap-2 sm:gap-4 md:gap-4">
                 {/* VOX Logo */}
                 <motion.div
                   whileHover={{ scale: 1.1, y: -5 }}
